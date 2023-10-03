@@ -72,7 +72,7 @@ function Info() {
 
                     </div>
                     <div className="m-auto w-full py-4">
-                        <div class="mb-4 flex flex-shrink border-b border-gray-200 dark:border-gray-700">
+                        <div class="mb-4 md:flex flex-shrink border-b border-gray-200 dark:border-gray-700">
                             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
                                 <li class="mr-2" role="presentation">
                                     <button class="inline-block p-4 border-b-2 rounded-t-lg" id="swatches-tab" data-tabs-target="#swatches" type="button" role="tab" aria-controls="swatches" aria-selected="true">Swatches</button>
@@ -92,7 +92,7 @@ function Info() {
                             </ul>
                         </div>
                         <div id="myTabContent">
-                            <div class=" p-4 rounded-lg bg-gray-50 dark:bg-gray-800 flex" id="swatches" role="tabpanel" aria-labelledby="swatches-tab">
+                            <div class=" p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="swatches" role="tabpanel" aria-labelledby="swatches-tab">
                                 <SwatchesPicker className="w-full m-auto" color={color} onChange={handleChange} />
                             </div>
                             <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800 " id="Circles" role="tabpanel" aria-labelledby="Circles-tab">
