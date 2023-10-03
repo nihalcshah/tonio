@@ -43,7 +43,7 @@ function Info() {
                 <div className="font-bold md:text-4xl text-2xl">Customize</div>
                 <div className="font-medium md:text-md text-sm">Create a Tone Swatch</div>
                 <div className="grid md:grid-cols-2">
-                    <div className="p-8 flex flex-col"  >
+                    <div className="md:p-8 p-4 flex flex-col"  >
                         <div ref={elementRef} className="w-full">
                             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat" crossorigin="anonymous" />
                             <div className="px-4 pt-6 pb-4 grow w-max min-w-[60%] m-auto flex flex-col bg-white shadow-xl" style={{ fontFamily: "Montserrat" }}>
@@ -72,7 +72,7 @@ function Info() {
 
                     </div>
                     <div className="m-auto w-full py-4">
-                        <div class="mb-4 md:flex flex-shrink border-b border-gray-200 dark:border-gray-700">
+                        <div class="mb-4 hidden md:flex flex-shrink border-b border-gray-200 dark:border-gray-700">
                             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
                                 <li class="mr-2" role="presentation">
                                     <button class="inline-block p-4 border-b-2 rounded-t-lg" id="swatches-tab" data-tabs-target="#swatches" type="button" role="tab" aria-controls="swatches" aria-selected="true">Swatches</button>
@@ -91,7 +91,7 @@ function Info() {
                                 </li>
                             </ul>
                         </div>
-                        <div id="myTabContent">
+                        <div className="hidden md:block" id="myTabContent">
                             <div class=" p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="swatches" role="tabpanel" aria-labelledby="swatches-tab">
                                 <SwatchesPicker className="w-full m-auto" color={color} onChange={handleChange} />
                             </div>
@@ -106,6 +106,14 @@ function Info() {
                             </div>
                             <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="colorful" role="tabpanel" aria-labelledby="colorful-tab">
                                 <SketchPicker className="w-full m-auto" color={color} onChange={handleChange} />
+                            </div>
+                        </div>
+                        <div className="md:hidden">
+                            <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="swatches" role="tabpanel" aria-labelledby="swatches-tab">
+                                <SwatchesPicker className="w-full m-auto" color={color} onChange={handleChange} />
+                            </div>
+                            <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="Slider" role="tabpanel" aria-labelledby="Slider-tab">
+                                <SliderPicker className="w-full m-auto" color={color} onChange={handleChange} />
                             </div>
                         </div>
                     </div>
