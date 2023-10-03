@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import Home from './Home';
 import Info from './Inf'
 import "./index.css"
+import 'flowbite'
 import {
   createBrowserRouter,
   RouterProvider,

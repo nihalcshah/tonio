@@ -75,33 +75,33 @@ function Info() {
                         <div class="mb-4 flex flex-shrink border-b border-gray-200 dark:border-gray-700">
                             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
                                 <li class="mr-2" role="presentation">
-                                    <button class="inline-block p-4 border-b-2 rounded-t-lg" id="profile-tab" data-tabs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Swatches</button>
+                                    <button class="inline-block p-4 border-b-2 rounded-t-lg" id="swatches-tab" data-tabs-target="#swatches" type="button" role="tab" aria-controls="swatches" aria-selected="true">Swatches</button>
                                 </li>
                                 <li class="mr-2" role="presentation">
-                                    <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="dashboard-tab" data-tabs-target="#dashboard" type="button" role="tab" aria-controls="dashboard" aria-selected="false">Circles</button>
+                                    <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="Circles-tab" data-tabs-target="#Circles" type="button" role="tab" aria-controls="dashboard" aria-selected="false">Circles</button>
                                 </li>
                                 <li class="mr-2" role="presentation">
                                     <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="settings-tab" data-tabs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Slider</button>
                                 </li>
-                                <li role="presentation">
-                                    <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="contacts-tab" data-tabs-target="#contacts" type="button" role="tab" aria-controls="contacts" aria-selected="false">Block</button>
+                                <li class="mr-2" role="presentation">
+                                    <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="Block-tab" data-tabs-target="#Block" type="button" role="tab" aria-controls="Block" aria-selected="false">Block</button>
                                 </li>
-                                <li role="presentation">
+                                <li class="mr-2" role="presentation">
                                     <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="colorful-tab" data-tabs-target="#colorful" type="button" role="tab" aria-controls="colorful" aria-selected="false">Colorful</button>
                                 </li>
                             </ul>
                         </div>
                         <div id="myTabContent">
-                            <div class=" p-4 rounded-lg bg-gray-50 dark:bg-gray-800 flex" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class=" p-4 rounded-lg bg-gray-50 dark:bg-gray-800 flex" id="swatches" role="tabpanel" aria-labelledby="swatches-tab">
                                 <SwatchesPicker className="w-full m-auto" color={color} onChange={handleChange} />
                             </div>
-                            <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800 " id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                            <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800 " id="Circles" role="tabpanel" aria-labelledby="Circles-tab">
                                 <CirclePicker className="left-1/2" color={color} onChange={handleChange} />
                             </div>
-                            <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                            <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="Slider" role="tabpanel" aria-labelledby="Slider-tab">
                                 <SliderPicker className="w-full m-auto" color={color} onChange={handleChange} />
                             </div>
-                            <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="contacts" role="tabpanel" aria-labelledby="contacts-tab">
+                            <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="Block" role="tabpanel" aria-labelledby="Block-tab">
                                 <BlockPicker className="w-full m-auto" color={color} onChange={handleChange} />
                             </div>
                             <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="colorful" role="tabpanel" aria-labelledby="colorful-tab">
