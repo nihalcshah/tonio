@@ -82,6 +82,7 @@ function Info() {
     const [selectedFont, setSelectedFont] = useState("Montserrat")
     const [selectedFontImport, setSelectedFontImport] = useState("https://fonts.googleapis.com/css?family=Montserrat")
     const elementRef = useRef(null);
+    const modalRef = useRef(null);
     const [fontSize, setFontSize] = useState("text-md")
     const [elemInd, setElemInd] = useState(0)
 
@@ -119,6 +120,14 @@ function Info() {
         setFontSize(event.target.value)
         console.log(event.target.value, fontSize)
     }
+    
+    function OpenModal(event){
+        modalRef.current.classList.remove("hidden")
+    }
+
+    function CloseModal(event){
+        modalRef.current.classList.add("hidden")
+    }
 
     return (
         <div className="relative w-screen min-h-screen flex flex-col overflow-x-hidden bg-gray-100">
@@ -129,7 +138,7 @@ function Info() {
                 </a>
             </div>
 
-            <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div id="staticModal" ref={modalRef} data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
                 <div class="relative w-full max-w-2xl max-h-full">
                     <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                         <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
@@ -306,7 +315,7 @@ function Info() {
                             </div>
                         </div>
                         <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
-                            <button data-modal-hide="staticModal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                            <button data-modal-hide="staticModal" onClick={CloseModal} type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -338,7 +347,7 @@ function Info() {
                                     <div className="pt-1 pb-2">Save</div>
                                 </button>
                             }
-                            <button data-modal-target="staticModal" data-modal-toggle="staticModal" className="flex gap-x-1 text-black my-auto mt-4 my-2 px-4 hover:underline">
+                            <button data-modal-target="staticModal"onClick={OpenModal} data-modal-toggle="staticModal" className="flex gap-x-1 text-black my-auto mt-4 my-2 px-4 hover:underline">
                                 <svg className="w-4 aspect-square my-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                 </svg>
