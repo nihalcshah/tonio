@@ -6,12 +6,14 @@ function Home() {
     return (
         <div className="relative w-screen h-screen">
             <div className="fixed w-screen p-4 shadow-md flex">
-                <img src="./tonio.png" className="w-8 aspect-square my-auto mx-2" />
-                <div className="font-medium text-3xl mb-1">Tone.io</div>
+                <a className="flex" href="/">
+                    <img src="./tonio.png" className="w-8 aspect-square my-auto mx-2" />
+                    <div className="font-medium text-3xl mb-1">Tone.io</div>
+                </a>
             </div>
             <div className="flex w-screen h-screen">
                 <div className="m-auto ">
-                    <div className=" text-center font-bold text-8xl tracking-wider">Tone.io</div>
+                    <div className=" text-center font-bold text-8xl ">Tone.io</div>
                     <div className="text-xl text-center mt-2">Add Some Color to Your Life</div>
                     <div className="flex mt-4">
                         <a href="/customize" className="text-md font-bold text-center bg-black text-white border-black  px-4 pt-1 pb-2 rounded-xl m-auto  hover:bg-gradient hover:bg-gradient-to-tr hover:from-purple-600 hover:to-orange-500 hover:rounded-xl hover:border-white">

@@ -33,9 +33,11 @@ function Info() {
 
     return (
         <div className="relative w-screen min-h-screen flex flex-col overflow-x-hidden bg-gray-100">
-            <div className="relative w-screen p-4 shadow-md flex bg-gray-100">
-                <img src="./tonio.png" className="w-8 aspect-square my-auto mx-2" />
-                <div className="font-medium text-3xl mb-1">Tone.io</div>
+            <div className="relative w-screen p-4 shadow-md flex">
+                <a className="flex" href="/">
+                    <img src="./tonio.png" className="w-8 aspect-square my-auto mx-2" />
+                    <div className="font-medium text-3xl mb-1">Tone.io</div>
+                </a>
             </div>
             <div className="md:p-5 p-1 m-auto w-5/6 ">
                 <div className="font-bold md:text-4xl text-2xl">Customize</div>
@@ -44,7 +46,7 @@ function Info() {
                     <div className="p-8 flex flex-col"  >
                         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat" />
                         <div ref={elementRef} className="w-full">
-                            <div className="px-4 pt-6 pb-4 grow w-max min-w-[50%] m-auto flex flex-col bg-white shadow-xl" style={{ fontFamily: "Montserrat" }}>
+                            <div className="px-4 pt-6 pb-4 grow w-max min-w-[60%] m-auto flex flex-col bg-white shadow-xl" style={{ fontFamily: "Montserrat" }}>
                                 <div className="aspect-[3/4] w-full mx-auto p-2" style={{ background: color }}></div>
                                 <div className="flex w-full mx-auto justify-between p-2 gap-x-4">
                                     <div className="text-md font-medium">{color}</div>
@@ -54,13 +56,13 @@ function Info() {
                         </div>
                         
                         {saved ?
-                            <button className="appearance-none my-2 flex font-bold px-4 py-1 mx-auto bg-white text-black gap-x-1 rounded-2xl w-max">
+                            <button className="appearance-none my-2 mt-4 flex font-bold px-4 py-1 mx-auto bg-white text-black gap-x-1 rounded-2xl w-max">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-4 aspect-square my-auto" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" >
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                 </svg>
                                 <div className="">Saved</div>
                             </button> :
-                            <button className="appearance-none my-2 flex font-bold px-4  mx-auto bg-black text-white gap-x-1 rounded-2xl w-max hover:bg-white hover:text-black" onClick={handleSave}>
+                            <button className="appearance-none my-2 mt-4 flex font-bold px-4  mx-auto bg-black text-white gap-x-1 rounded-2xl w-max hover:bg-white hover:text-black" onClick={handleSave}>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-4 aspect-square my-auto" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                 </svg>
