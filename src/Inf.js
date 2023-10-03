@@ -20,7 +20,7 @@ function Info() {
     }
 
     function handleSave(event) {
-        toPng(elementRef.current, { cacheBust: true}).then((dataUrl) => {
+        toPng(elementRef.current, { cacheBust: false}).then((dataUrl) => {
             const link = document.createElement("a");
             link.download = colorName + ".png";
             link.href = dataUrl;
@@ -44,8 +44,8 @@ function Info() {
                 <div className="font-medium md:text-md text-sm">Create a Tone Swatch</div>
                 <div className="grid md:grid-cols-2">
                     <div className="p-8 flex flex-col"  >
-                        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat" />
                         <div ref={elementRef} className="w-full">
+                            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat" crossorigin="anonymous" />
                             <div className="px-4 pt-6 pb-4 grow w-max min-w-[60%] m-auto flex flex-col bg-white shadow-xl" style={{ fontFamily: "Montserrat" }}>
                                 <div className="aspect-[3/4] w-full mx-auto p-2" style={{ background: color }}></div>
                                 <div className="flex w-full mx-auto justify-between p-2 gap-x-4">
