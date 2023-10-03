@@ -92,7 +92,7 @@ function Info() {
                             </ul>
                         </div>
                         <div id="myTabContent">
-                            <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800 flex" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class=" p-4 rounded-lg bg-gray-50 dark:bg-gray-800 flex" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                                 <SwatchesPicker className="w-full m-auto" color={color} onChange={handleChange} />
                             </div>
                             <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800 " id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
