@@ -78,10 +78,10 @@ function Info() {
                                     <button class="inline-block p-4 border-b-2 rounded-t-lg" id="swatches-tab" data-tabs-target="#swatches" type="button" role="tab" aria-controls="swatches" aria-selected="true">Swatches</button>
                                 </li>
                                 <li class="mr-2" role="presentation">
-                                    <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="Circles-tab" data-tabs-target="#Circles" type="button" role="tab" aria-controls="dashboard" aria-selected="false">Circles</button>
+                                    <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="Circles-tab" data-tabs-target="#Circles" type="button" role="tab" aria-controls="Circles" aria-selected="false">Circles</button>
                                 </li>
                                 <li class="mr-2" role="presentation">
-                                    <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="settings-tab" data-tabs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Slider</button>
+                                    <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="Slider-tab" data-tabs-target="#Slider" type="button" role="tab" aria-controls="Slider" aria-selected="false">Slider</button>
                                 </li>
                                 <li class="mr-2" role="presentation">
                                     <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="Block-tab" data-tabs-target="#Block" type="button" role="tab" aria-controls="Block" aria-selected="false">Block</button>
