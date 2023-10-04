@@ -245,6 +245,10 @@ function Info() {
         exportRef.current.classList.add("hidden")
     }
 
+    function OpenGallery(event){
+        galleryRef.current.classList.remove("hidden")
+    }
+
     return (
         <div className="relative w-screen min-h-screen flex flex-col overflow-x-hidden bg-gray-100">
             <div className="relative w-screen p-4 shadow-md flex">
