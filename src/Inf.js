@@ -9,9 +9,9 @@ import getContrastRatio from 'get-contrast-ratio';
 
 function Outlined({ elementRef, selectedFont, selectedFontImport, color, colorName, fontSize }) {
     return (
-        <div ref={elementRef} className="w-full">
+        <div ref={elementRef} className="w-max">
             <link rel="stylesheet" href={selectedFontImport} crossorigin="anonymous" />
-            <div className="px-4 pt-6 pb-4 grow w-max min-w-[60%] m-auto flex flex-col bg-white shadow-xl" style={{ fontFamily: selectedFont }}>
+            <div className="px-4 pt-6 pb-4 min-w-[60%] m-auto flex flex-col shadow-xl bg-white " style={{ fontFamily: selectedFont }}>
                 <div className="aspect-[3/4] w-full mx-auto p-2" style={{ background: color }}></div>
                 <div className="flex w-full mx-auto justify-between p-2 gap-x-4">
                     <div className={"font-medium " + fontSize}>{color}</div>
@@ -24,9 +24,9 @@ function Outlined({ elementRef, selectedFont, selectedFontImport, color, colorNa
 
 function Croptop({ elementRef, selectedFont, selectedFontImport, color, colorName, fontSize }) {
     return (
-        <div ref={elementRef} className="w-full">
+        <div ref={elementRef} className="w-max">
             <link rel="stylesheet" href={selectedFontImport} crossorigin="anonymous" />
-            <div className="pb-3 grow w-max min-w-[60%] m-auto flex flex-col bg-white shadow-xl" style={{ fontFamily: selectedFont }}>
+            <div className="pb-3 grow w-max min-w-[60%] m-auto flex flex-col shadow-xl bg-white" style={{ fontFamily: selectedFont }}>
                 <div className="aspect-[3/4] w-full mx-auto" style={{ background: color }}></div>
                 <div className="flex w-full mx-auto justify-between p-2 pb-1 gap-x-4">
                     <div className={"font-medium " + fontSize}>{color}</div>
@@ -37,37 +37,84 @@ function Croptop({ elementRef, selectedFont, selectedFontImport, color, colorNam
     )
 }
 
+
+
+function Gallery({ galleryRef, selectedFont, selectedFontImport, fontSize, setColor, setColorName, colorMap, setColorMap, generateColorMap }) {
+
+
+    function CloseGallery(event) {
+        galleryRef.current.classList.add("hidden")
+    }
+
+    function setCol(event) {
+        setColorMap(generateColorMap())
+        console.log(colorMap)
+    }
+
+    return (
+        <div id="galleryModal" ref={galleryRef} data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div class="relative w-full max-w-4xl max-h-full">
+                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <div class="flex items-start justify-between p-4 pb-0  rounded-t dark:border-gray-600">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                            Tone Inspiration Gallery
+                        </h3>
+
+                        <button type="button" onClick={CloseGallery} data-modal-hide="galleryModal" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="galleryModal">
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                    </div>
+                    <div className="flex px-4 pb-4 border-b">
+                        <div className=" font-medium pt-1">Select a Tone for Inspiration</div>
+                        <button type="button" onClick={setCol} class="p-2 mx-2 z-30 text-sm font-medium text-white inline-flex items-center bg-gray-700 hover:bg-white hover:text-black rounded-lg text-center ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" fill="currentColor" class="w-3.5 h-3.5"><path d="M274.9 34.3c-28.1-28.1-73.7-28.1-101.8 0L34.3 173.1c-28.1 28.1-28.1 73.7 0 101.8L173.1 413.7c28.1 28.1 73.7 28.1 101.8 0L413.7 274.9c28.1-28.1 28.1-73.7 0-101.8L274.9 34.3zM200 224a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM96 200a24 24 0 1 1 0 48 24 24 0 1 1 0-48zM224 376a24 24 0 1 1 0-48 24 24 0 1 1 0 48zM352 200a24 24 0 1 1 0 48 24 24 0 1 1 0-48zM224 120a24 24 0 1 1 0-48 24 24 0 1 1 0 48zm96 328c0 35.3 28.7 64 64 64H576c35.3 0 64-28.7 64-64V256c0-35.3-28.7-64-64-64H461.7c11.6 36 3.1 77-25.4 105.5L320 413.8V448zM480 328a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" /></svg>
+                            {/* Randomize */}
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
+                        {colorMap}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    )
+}
+
 function Buzzcut({ elementRef, selectedFont, selectedFontImport, color, colorName, fontSize }) {
     var textColor = "black"
-    if (getContrastRatio("black", color)-3 < getContrastRatio("white", color)) {
+    if (getContrastRatio("black", color) - 3 < getContrastRatio("white", color)) {
         textColor = "white"
     }
-    console.log(textColor)
     return (
-        <div ref={elementRef} className="w-full">
+        <div ref={elementRef} className="w-max">
             <link rel="stylesheet" href={selectedFontImport} crossorigin="anonymous" />
             <div className="grow w-max m-auto flex flex-col bg-white shadow-xl" style={{ fontFamily: selectedFont, color: textColor }}>
                 <div className="relative aspect-[3/4] w-64 mx-auto" style={{ background: color }}>
-                    <div className={"absolute bottom-2 left-2 font-medium " + fontSize}>{color}</div>
-                    <div className={"absolute bottom-2 right-2 font-extrabold whitespace-nowrap " + fontSize}>{colorName}</div>
+                    <div className={"absolute bottom-3 left-3 font-medium " + fontSize}>{color}</div>
+                    <div className={"absolute bottom-3 right-3 font-extrabold whitespace-nowrap " + fontSize}>{colorName}</div>
                 </div>
-
             </div>
         </div>
     )
 }
 function Cleancut({ elementRef, selectedFont, selectedFontImport, color, colorName, fontSize }) {
     var textColor = "black"
-    if (getContrastRatio("black", color)-2 < getContrastRatio("white", color)) {
+    if (getContrastRatio("black", color) - 2 < getContrastRatio("white", color)) {
         textColor = "white"
     }
     return (
-        <div ref={elementRef} className="w-full">
+        <div ref={elementRef} className="w-max">
             <link rel="stylesheet" href={selectedFontImport} crossorigin="anonymous" />
             <div className="grow w-max m-auto flex flex-col bg-white shadow-xl" style={{ fontFamily: selectedFont, color: textColor }}>
                 <div className="relative aspect-square w-72 mx-auto" style={{ background: color }}>
-                    <div className={"absolute bottom-2 left-2 font-medium " + fontSize}>{color}</div>
-                    <div className={"absolute bottom-2 right-2 font-extrabold whitespace-nowrap " + fontSize}>{colorName}</div>
+                    <div className={"absolute bottom-3 left-3 font-medium " + fontSize}>{color}</div>
+                    <div className={"absolute bottom-3 right-3 font-extrabold whitespace-nowrap " + fontSize}>{colorName}</div>
                 </div>
 
             </div>
@@ -83,8 +130,68 @@ function Info() {
     const [selectedFontImport, setSelectedFontImport] = useState("https://fonts.googleapis.com/css?family=Montserrat")
     const elementRef = useRef(null);
     const modalRef = useRef(null);
+    const exportRef = useRef(null);
+    const galleryRef = useRef(null);
     const [fontSize, setFontSize] = useState("text-md")
     const [elemInd, setElemInd] = useState(0)
+    const [imgLink, setImgLink] = useState("")
+    const [imgSrc, setImgSrc] = useState("")
+
+
+
+    function SelectColor(event) {
+        galleryRef.current.classList.add("hidden")
+        setColor(event.target.value)
+        setColorName(GetColorName(event.target.value))
+    }
+
+    function generateColorMap() {
+        var colors = []
+        for (var i = 0; i < 16; i++) {
+            colors.push("#" + Math.floor(Math.random() * 16777215).toString(16))
+        }
+        var cm = colors.map(function (data) {
+            var textColor = "black"
+            if (getContrastRatio("black", data) - 3 < getContrastRatio("white", data)) {
+                textColor = "white"
+            }
+
+            return (
+                <div>
+                    <div className="h-auto max-w-full object-cover rounded-lg relative">
+                        <div className="absolute top-0 left-0 w-full h-full object-fit  z-20 rounded-lg opacity-0 block hover:opacity-100">
+                            <div className="w-full h-full bg-black absolute z-20 opacity-50">
+                            </div>
+                            <div className="w-full h-full flex z-30">
+                                <button type="button" value={data} onClick={SelectColor} data-modal-hide="galleryModal" class="px-5 m-auto z-30 py-2.5 text-sm font-medium text-white inline-flex items-center bg-gray-700 hover:bg-white hover:text-black rounded-lg text-center ">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 mr-2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                                    </svg>
+                                    Select Color
+                                </button>
+                            </div>
+                        </div>
+                        {/* <img class="rounded-lg z-10" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image.jpg" alt="" /> */}
+                        <div className=" w-full">
+                            <link rel="stylesheet" href={selectedFontImport} crossorigin="anonymous" />
+                            <div className="grow w-full m-auto flex flex-col bg-white shadow-xl" style={{ fontFamily: selectedFont, color: textColor }}>
+                                <div className="relative aspect-[3/4] w-full mx-auto" style={{ background: data }}>
+                                    <div className={"absolute bottom-7 left-2 font-medium " + "text-md"}>{data}</div>
+                                    <div className={"absolute bottom-2 left-2 font-extrabold whitespace-nowrap " + "text-md"}>{GetColorName(data)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        })
+        return cm
+    }
+
+    var newscm = generateColorMap()
+    const [colorMap, setColorMap] = useState(newscm)
+    // console.log("news", newscm)
+    // setColorMap(newscm)
 
     function handleChange(newColor, event) {
         console.log(newColor)
@@ -98,8 +205,9 @@ function Info() {
             const link = document.createElement("a");
             link.download = colorName + ".png";
             link.href = dataUrl;
-            setSaved(true)
-            link.click();
+            setImgLink(link)
+            setImgSrc(dataUrl)
+            exportRef.current.classList.remove("hidden")
         }).catch((err) => {
             console.log(err);
         });
@@ -120,13 +228,21 @@ function Info() {
         setFontSize(event.target.value)
         console.log(event.target.value, fontSize)
     }
-    
-    function OpenModal(event){
+
+    function OpenModal(event) {
         modalRef.current.classList.remove("hidden")
     }
 
-    function CloseModal(event){
+    function imgClickLink(event) {
+        imgLink.click()
+    }
+
+    function CloseModal(event) {
         modalRef.current.classList.add("hidden")
+    }
+
+    function CloseExport(event) {
+        exportRef.current.classList.add("hidden")
     }
 
     return (
@@ -137,6 +253,48 @@ function Info() {
                     <div className="font-medium text-3xl mb-1">Tone.io</div>
                 </a>
             </div>
+
+            <div id="exportModal" ref={exportRef} data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div class="relative w-full max-w-2xl max-h-full">
+
+                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+
+                        <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                Exported Image:
+                            </h3>
+                            <button type="button" onClick={CloseExport} class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="exportModal">
+                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                </svg>
+                                <span class="sr-only">Close modal</span>
+                            </button>
+                        </div>
+                        <div className="flex m-auto">
+                            <img src={imgSrc} className="mx-auto w-1/3 m-3 shadow-lg" />
+                        </div>
+                        <div class="flex items-center self-center justify-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
+                            {saved ?
+                                <button className="appearance-none my-2 mt-4 flex font-bold px-4 py-1 bg-white text-black gap-x-1 rounded-2xl hover:bg-black hover:text-white" onClick={imgClickLink}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 aspect-square my-auto" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" >
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                    </svg>
+                                    <div className="">Saved</div>
+                                </button> :
+                                <button className="appearance-none my-2 mt-4 flex font-bold px-4 bg-black text-white gap-x-1 rounded-2xl hover:bg-white hover:text-black" onClick={imgClickLink}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 aspect-square my-auto" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    <div className="pt-1 pb-2">Save</div>
+                                </button>
+                            }<span className="font-bold px-2 pt-1 pb-2 my-2 mt-4">OR</span>
+                            <div className="pt-1 pb-2 my-2 mt-4 rounded-lg shadow px-2"> Hold Image and Add To Photos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <Gallery galleryRef={galleryRef} selectedFont={selectedFont} selectedFontImport={selectedFontImport} fontSize={fontSize} setColor={setColor} setColorName={setColorName} colorMap={colorMap} setColorMap={setColorMap} generateColorMap={generateColorMap} />
 
             <div id="staticModal" ref={modalRef} data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
                 <div class="relative w-full max-w-2xl max-h-full">
@@ -324,8 +482,14 @@ function Info() {
             <div className="md:p-5 p-1 m-auto w-5/6 ">
                 <div className="font-bold md:text-4xl text-2xl">Customize</div>
                 <div className="font-medium md:text-md text-sm">Create a Tone Swatch</div>
+                <button className="flex p-1.5 rounded-lg bg-black text-white hover:bg-white hover:text-black gap-2 mt-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 m-auto" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    </svg>
+                    <div className="text-sm" data-modal-target="galleryModal" data-modal-toggle="galleryModal">Visit Gallery For Colors</div>
+                </button>
                 <div className="grid md:grid-cols-2">
-                    <div className="md:p-8 p-4 flex flex-col"  >
+                    <div className="md:p-8 p-4 flex flex-col items-center"  >
                         {[
                             <Outlined color={color} selectedFont={selectedFont} selectedFontImport={selectedFontImport} elementRef={elementRef} colorName={colorName} fontSize={fontSize} />,
                             <Croptop color={color} selectedFont={selectedFont} selectedFontImport={selectedFontImport} elementRef={elementRef} colorName={colorName} fontSize={fontSize} />,
@@ -333,21 +497,13 @@ function Info() {
                             <Cleancut color={color} selectedFont={selectedFont} selectedFontImport={selectedFontImport} elementRef={elementRef} colorName={colorName} fontSize={fontSize} />,
                         ][elemInd]}
                         <div className="flex gap-x-3 mx-auto">
-                            {saved ?
-                                <button className="appearance-none my-2 mt-4 flex font-bold px-4 py-1 bg-white text-black gap-x-1 rounded-2xl">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 aspect-square my-auto" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" >
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                    </svg>
-                                    <div className="">Saved</div>
-                                </button> :
-                                <button className="appearance-none my-2 mt-4 flex font-bold px-4 bg-black text-white gap-x-1 rounded-2xl hover:bg-white hover:text-black" onClick={handleSave}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 aspect-square my-auto" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                    </svg>
-                                    <div className="pt-1 pb-2">Save</div>
-                                </button>
-                            }
-                            <button data-modal-target="staticModal"onClick={OpenModal} data-modal-toggle="staticModal" className="flex gap-x-1 text-black my-auto mt-4 my-2 px-4 hover:underline">
+                            <button data-modal-target="exportModal" data-modal-toggle="exportModal" className="appearance-none my-2 mt-4 flex font-bold px-4 bg-black text-white gap-x-1 rounded-2xl hover:bg-white hover:text-black" onClick={handleSave}>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 aspect-square my-auto" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 19.5l-15-15m0 0v11.25m0-11.25h11.25" />
+                                </svg>
+                                <div className="pt-1 pb-2">Export</div>
+                            </button>
+                            <button data-modal-target="staticModal" onClick={OpenModal} data-modal-toggle="staticModal" className="flex gap-x-1 text-black my-auto mt-4 my-2 px-4 hover:underline">
                                 <svg className="w-4 aspect-square my-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                 </svg>
