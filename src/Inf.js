@@ -53,14 +53,15 @@ function Gallery({ galleryRef, selectedFont, selectedFontImport, fontSize, setCo
 
     return (
         <div id="galleryModal" ref={galleryRef} data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <div class="relative w-full max-w-4xl max-h-full">
+            <div className="fixed w-full h-full bg-black z-20 opacity-30 top-0 left-0"></div>
+            <div class="relative w-full max-w-4xl max-h-full z-20">
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                     <div class="flex items-start justify-between p-4 pb-0  rounded-t dark:border-gray-600">
                         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                             Tone Inspiration Gallery
                         </h3>
 
-                        <button type="button" onClick={CloseGallery} data-modal-hide="galleryModal" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="galleryModal">
+                        <button type="button" onClick={CloseGallery} data-modal-hide="galleryModal" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" >
                             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                             </svg>
@@ -135,7 +136,9 @@ function Info() {
     const [fontSize, setFontSize] = useState("text-md")
     const [elemInd, setElemInd] = useState(0)
     const [imgLink, setImgLink] = useState("")
+    const [exporting, setExporting] = useState(false)
     const [imgSrc, setImgSrc] = useState("")
+    const [exportLoaded, setExportLoaded] = useState(false)
 
 
 
@@ -176,8 +179,8 @@ function Info() {
                             <link rel="stylesheet" href={selectedFontImport} crossorigin="anonymous" />
                             <div className="grow w-full m-auto flex flex-col bg-white shadow-xl" style={{ fontFamily: selectedFont, color: textColor }}>
                                 <div className="relative aspect-[3/4] w-full mx-auto" style={{ background: data }}>
-                                    <div className={"absolute bottom-7 left-2 font-medium " + "text-md"}>{data}</div>
-                                    <div className={"absolute bottom-2 left-2 font-extrabold whitespace-nowrap " + "text-md"}>{GetColorName(data)}</div>
+                                    <div className={"absolute bottom-7 left-2 font-medium " + "text-sm"}>{data}</div>
+                                    <div className={"absolute bottom-2 left-2 font-extrabold whitespace-nowrap " + "text-sm"}>{GetColorName(data)}</div>
                                 </div>
                             </div>
                         </div>
@@ -200,13 +203,20 @@ function Info() {
         setSaved(false)
     }
 
+    function timeout(delay) {
+        return new Promise(res => setTimeout(res, delay));
+    }
+
     function handleSave(event) {
-        toPng(elementRef.current, { cacheBust: false }).then((dataUrl) => {
+        toPng(elementRef.current, { cacheBust: false }).then(async (dataUrl) => {
             const link = document.createElement("a");
             link.download = colorName + ".png";
             link.href = dataUrl;
             setImgLink(link)
             setImgSrc(dataUrl)
+            setExporting(true);
+            await timeout(1500);
+            setExporting(false)
             exportRef.current.classList.remove("hidden")
         }).catch((err) => {
             console.log(err);
@@ -245,8 +255,16 @@ function Info() {
         exportRef.current.classList.add("hidden")
     }
 
-    function OpenGallery(event){
+    function OpenGallery(event) {
         galleryRef.current.classList.remove("hidden")
+    }
+
+    function exportLoad(event) {
+        setExportLoaded(true)
+    }
+
+    function beginExporting(event) {
+        setExporting(true)
     }
 
     return (
@@ -259,7 +277,8 @@ function Info() {
             </div>
 
             <div id="exportModal" ref={exportRef} data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div class="relative w-full max-w-2xl max-h-full">
+                <div className="fixed w-full h-full bg-black z-20 opacity-30 top-0 left-0"></div>
+                <div class="relative w-full max-w-2xl max-h-full z-20">
 
                     <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
 
@@ -275,7 +294,12 @@ function Info() {
                             </button>
                         </div>
                         <div className="flex m-auto">
-                            <img src={imgSrc} className="mx-auto w-1/3 m-3 shadow-lg" />
+                            <img src={imgSrc} onLoad={exportLoad} className={exportLoaded ? "mx-auto w-1/3 m-3 shadow-lg" : "mx-auto w-1/3 m-3 shadow-lg hidden"} />
+                            <div className={exportLoaded ? "hidden" : "flex items-center justify-center mx-auto h-max p-5 w-1/3 m-3 bg-gray-300 rounded dark:bg-gray-700"}>
+                                <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                    <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z" />
+                                </svg>
+                            </div>
                         </div>
                         <div class="flex items-center self-center justify-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
                             {saved ?
@@ -301,9 +325,7 @@ function Info() {
             <Gallery galleryRef={galleryRef} selectedFont={selectedFont} selectedFontImport={selectedFontImport} fontSize={fontSize} setColor={setColor} setColorName={setColorName} colorMap={colorMap} setColorMap={setColorMap} generateColorMap={generateColorMap} />
 
             <div id="staticModal" ref={modalRef} data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                {/* <div className="top-0 left-0 right-0 z-20 fixed w-full max-h-full opacity-30">
-                        
-                </div> */}
+                <div className="fixed w-full h-full bg-black z-20 opacity-30 top-0 left-0"></div>
                 <div class="relative w-full max-w-2xl max-h-full z-20">
                     <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                         <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
@@ -505,9 +527,16 @@ function Info() {
                         ][elemInd]}
                         <div className="flex gap-x-3 mx-auto">
                             <button data-modal-target="exportModal" data-modal-toggle="exportModal" className="appearance-none my-2 mt-4 flex font-bold px-4 bg-black text-white gap-x-1 rounded-2xl hover:bg-white hover:text-black" onClick={handleSave}>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 aspect-square my-auto" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 19.5l-15-15m0 0v11.25m0-11.25h11.25" />
-                                </svg>
+                                {exporting ?
+                                    <svg aria-hidden="true" class="w-4 aspect-square my-auto mr-2 text-gray-200 animate-spin fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                                        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                                    </svg> :
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 aspect-square my-auto" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 19.5l-15-15m0 0v11.25m0-11.25h11.25" />
+                                    </svg>
+                                }
+
                                 <div className="pt-1 pb-2">Export</div>
                             </button>
                             <button data-modal-target="staticModal" onClick={OpenModal} data-modal-toggle="staticModal" className="flex gap-x-1 text-black my-auto mt-4 my-2 px-4 hover:underline">
