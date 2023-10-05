@@ -5,6 +5,7 @@ import { toPng } from 'html-to-image';
 import { GetColorName } from 'hex-color-to-color-name';
 import { SwatchesPicker, CirclePicker, SliderPicker, BlockPicker, SketchPicker } from "react-color";
 import getContrastRatio from 'get-contrast-ratio';
+import shader from 'shader';
 
 
 function Outlined({ elementRef, selectedFont, selectedFontImport, color, colorName, fontSize }) {
@@ -36,8 +37,6 @@ function Croptop({ elementRef, selectedFont, selectedFontImport, color, colorNam
         </div>
     )
 }
-
-
 
 function Gallery({ galleryRef, selectedFont, selectedFontImport, fontSize, setColor, setColorName, colorMap, setColorMap, generateColorMap }) {
 
@@ -133,6 +132,7 @@ function Info() {
     const modalRef = useRef(null);
     const exportRef = useRef(null);
     const galleryRef = useRef(null);
+    const shadeRef = useRef(null);
     const [fontSize, setFontSize] = useState("text-md")
     const [elemInd, setElemInd] = useState(0)
     const [imgLink, setImgLink] = useState("")
@@ -140,7 +140,15 @@ function Info() {
     const [imgSrc, setImgSrc] = useState("")
     const [exportLoaded, setExportLoaded] = useState(false)
 
+    function SelectShade(event){
+        shadeRef.current.classList.add("-translate-x-full")
+        setColor(event.target.value)
+        setColorName(GetColorName(event.target.value))
+    }
 
+    function OpenShade(event){
+        shadeRef.current.classList.remove("-translate-x-full")
+    }
 
     function SelectColor(event) {
         galleryRef.current.classList.add("hidden")
@@ -267,6 +275,47 @@ function Info() {
         setExporting(true)
     }
 
+    function CloseShade(event){
+        shadeRef.current.classList.add("-translate-x-full");
+    }
+
+    function getTextColor(colorVal){
+        var textColor = "black"
+        if (getContrastRatio("black", colorVal) - 3 < getContrastRatio("white", colorVal)) {
+            textColor = "white"
+        }
+        return textColor
+    }
+
+    function getShades(){
+        var shades = [
+            shader(color, 0.4),
+            shader(color, 0.2),
+            color,
+            shader(color, -0.2),
+            shader(color, -0.4),
+        ]
+
+        return shades.map(shade =>
+            <div className="w-full flex object-cover relative items-center h-16" style={{backgroundColor: shade}}>
+                <div className="m-auto"style={{color: getTextColor(shade)}}>{GetColorName(shade)}</div>
+                <div className="absolute top-0 left-0 w-full h-full object-fit  z-20 rounded-lg opacity-0 block hover:opacity-100">
+                    <div className="w-full h-full bg-black absolute z-20 opacity-50">
+                    </div>
+                    <div className="w-full h-full flex z-30">
+                        <button type="button" value={shade} onClick={SelectShade} data-modal-hide="galleryModal" class="px-5 m-auto z-30 py-2.5 text-sm font-medium text-white inline-flex items-center bg-gray-700 hover:bg-white hover:text-black rounded-lg text-center ">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 mr-2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                            </svg>
+                            Select Color
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+        
+    }
+
     return (
         <div className="relative w-screen min-h-screen flex flex-col overflow-x-hidden bg-gray-100">
             <div className="relative w-screen p-4 shadow-md flex">
@@ -274,6 +323,21 @@ function Info() {
                     <img src="./tonio.png" className="w-8 aspect-square my-auto mx-2" />
                     <div className="font-medium text-3xl mb-1">Tone.io</div>
                 </a>
+            </div>
+
+            <div ref={shadeRef} class="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-white w-80 dark:bg-gray-800" tabindex="-1">
+                <div className="fixed top-0 left-0 w-full h-full opacity-30 z-20 bg-black"></div>
+                <h5 id="drawer-label" class="relative inline-flex z-50 items-center mb-4 text-base font-semibold text-gray-500 dark:text-gray-400">Shades</h5>
+                <button type="button" onClick={CloseShade} class=" z-40 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 right-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white" >
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close menu</span>
+                </button>
+                <p class="relative mb-6 text-sm text-gray-500 dark:text-gray-400 z-50">Select Shades of the Current Color</p>
+                <div class="relative flex flex-col pt-0 p-4 z-50">
+                    {getShades()}
+                </div>
             </div>
 
             <div id="exportModal" ref={exportRef} data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -544,6 +608,14 @@ function Info() {
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                 </svg>
                                 <div className="font-bold pt-1 pb-1">Customize</div>
+                            </button>
+                        </div>
+                        <div className="flex mx-auto">
+                            <button onClick={OpenShade} type="button" data-drawer-target="drawer-example" data-drawer-show="drawer-example" aria-controls="drawer-example" className="flex gap-x-1 text-black my-auto px-4 bg-white hover:bg-black hover:text-white rounded-lg shadow">
+                                {/* <svg className="w-4 aspect-square my-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg> */}
+                                <div className="font-bold pt-1 pb-1">Edit Shades</div>
                             </button>
                         </div>
                     </div>
