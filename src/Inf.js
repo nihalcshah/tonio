@@ -204,6 +204,15 @@ function Info() {
     // console.log("news", newscm)
     // setColorMap(newscm)
 
+    function toTitleCase(str) {
+        return str.replace(
+          /\w\S*/g,
+          function(txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+          }
+        );
+    }
+
     function handleChange(newColor, event) {
         console.log(newColor)
         setColor(newColor["hex"])
@@ -237,7 +246,7 @@ function Info() {
 
     function handleFontChange(event) {
         var newFont = event.target.value.trim().replaceAll(" ", "+")
-        setSelectedFont(event.target.value.trim());
+        setSelectedFont(toTitleCase(event.target.value.trim()));
         setSelectedFontImport("https://fonts.googleapis.com/css?family=" + newFont)
         console.log(selectedFontImport, selectedFont)
     }
@@ -398,7 +407,7 @@ function Info() {
                             </h3>
                         </div>
                         <div class="p-6 h-min ">
-                            <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Preferred Font</h3>
+                            <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Preferred Style</h3>
                             <link rel="stylesheet" href={selectedFontImport} crossorigin="anonymous" />
                             <ul class="grid w-full place-center grid-cols-2 md:grid-cols-4 gap-1" style={{ fontFamily: selectedFont }}>
                                 <li className="m-auto">
@@ -469,7 +478,7 @@ function Info() {
 
                         </div>
                         <div class="p-6 h-min ">
-                            <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Preferred Style</h3>
+                            <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Preferred Font</h3>
 
                             <ul class="grid w-full grid-cols-2 md:grid-cols-3 gap-2">
                                 <li className="m-auto w-full" style={{ fontFamily: "Montserrat" }}>
