@@ -203,22 +203,22 @@ function PhotoRecolor() {
     }
 
     return (
-        <div className="relative w-screen min-h-screen flex flex-col bg-gray-100">
-            <div className="relative w-screen p-4 shadow-md flex bg-white">
-                <a className="flex" href="/">
-                    <img src="./tonio.png" className="w-8 aspect-square my-auto mx-2" alt="" />
-                    <div className="font-medium text-3xl mb-1">Tone.io</div>
+        <div className="relative w-full min-h-screen flex flex-col bg-[#FAF8F5]">
+            <header className="relative w-full px-6 py-4 flex items-center justify-between bg-white border-b border-[#EFECE6] z-10">
+                <a className="flex items-center gap-3" href="/">
+                    <img src="./tonio.png" className="w-9 aspect-square rounded-lg shadow-lg shadow-indigo-100" alt="" />
+                    <div className="font-display font-bold text-2xl tracking-tight">Tone.io</div>
                 </a>
-                <div className="my-auto ml-4 text-gray-500">Recolor a Photo</div>
-            </div>
+                <div className="hidden md:block text-stone-400 font-medium border-l border-stone-100 pl-6 h-6 leading-6">Recolor a Photo</div>
+            </header>
 
-            <div className="flex flex-col md:flex-row flex-1 p-4 gap-4">
-                <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-lg shadow p-4 min-h-[400px]">
+            <main className="flex flex-col md:flex-row flex-1 p-6 gap-6 max-w-[1440px] mx-auto w-full">
+                <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-3xl border border-stone-100 shadow-sm p-8 min-h-[400px]">
                     {!hasImage && (
-                        <div className="flex flex-col items-center gap-4">
-                            <div className="text-gray-500">Upload a photo of a wall, door, chair, or anything else you want to try a new color on.</div>
+                        <div className="flex flex-col items-center gap-6 text-center max-w-md">
+                            <div className="text-stone-500">Upload a photo of a wall, door, chair, or anything else you want to try a new color on.</div>
                             <button
-                                className="bg-black text-white font-bold px-4 py-2 rounded-xl"
+                                className="bg-[#1A1A1A] hover:bg-indigo-600 transition-all hover:-translate-y-0.5 text-white font-bold px-8 py-4 rounded-2xl"
                                 onClick={() => fileInputRef.current.click()}
                             >
                                 Upload Photo
@@ -229,10 +229,10 @@ function PhotoRecolor() {
                     <canvas
                         ref={canvasRef}
                         onClick={handleCanvasClick}
-                        className={hasImage ? "max-w-full max-h-[70vh] cursor-crosshair rounded" : "hidden"}
+                        className={hasImage ? "max-w-full max-h-[70vh] cursor-crosshair rounded-xl shadow-2xl border border-stone-100" : "hidden"}
                     />
                     {hasImage && (
-                        <div className="mt-2 text-sm text-gray-500">
+                        <div className="mt-4 px-4 py-2 bg-stone-50 border border-stone-100 rounded-full text-xs font-medium text-stone-500">
                             {selections.length === 0
                                 ? "Click on the object or surface you want to recolor."
                                 : "Click to add more area to the selection. Shift+click to remove an area."}
@@ -241,60 +241,66 @@ function PhotoRecolor() {
                 </div>
 
                 {hasImage && (
-                    <div className="w-full md:w-80 flex flex-col gap-4">
-                        <div className="bg-white rounded-lg shadow p-4">
-                            <div className="font-medium mb-2">Color</div>
-                            <SketchPicker color={color} onChangeComplete={(c) => setColor(c.hex)} className="!w-full !shadow-none" />
-                        </div>
+                    <aside className="w-full md:w-80 flex flex-col gap-5">
+                        <section className="bg-white rounded-3xl border border-stone-100 shadow-sm p-6">
+                            <div className="flex items-center justify-between mb-5">
+                                <span className="font-bold text-sm uppercase tracking-widest text-stone-400">Palette</span>
+                                <div className="w-7 h-7 rounded-lg shadow-sm border-2 border-white ring-1 ring-stone-100" style={{ backgroundColor: color }}></div>
+                            </div>
+                            <SketchPicker color={color} onChangeComplete={(c) => setColor(c.hex)} className="!w-full !shadow-none !border !border-stone-100 !rounded-xl" />
+                        </section>
 
-                        <div className="bg-white rounded-lg shadow p-4 flex flex-col gap-3">
+                        <section className="bg-white rounded-3xl border border-stone-100 shadow-sm p-6 flex flex-col gap-5">
                             <div>
-                                <div className="font-medium mb-1">Selection Tolerance</div>
+                                <div className="flex justify-between items-center mb-3">
+                                    <span className="font-bold text-sm">Selection Tolerance</span>
+                                    <span className="text-xs font-bold font-mono px-2 py-0.5 bg-stone-50 rounded border border-stone-100 text-stone-600">{tolerance}%</span>
+                                </div>
                                 <input
                                     type="range" min="1" max="100" value={tolerance}
                                     onChange={(e) => setTolerance(Number(e.target.value))}
-                                    className="w-full"
+                                    className="w-full accent-indigo-600"
                                 />
-                                <div className="text-xs text-gray-500">Higher = selects a wider range of shades near the click point.</div>
+                                <div className="text-[11px] text-stone-400 mt-2">Higher = selects a wider range of shades near the click point.</div>
                             </div>
 
-                            <label className="flex items-center gap-2 text-sm">
-                                <input type="checkbox" checked={globalMatch} onChange={(e) => setGlobalMatch(e.target.checked)} />
-                                Match color anywhere in photo (not just connected area)
+                            <label className="flex items-center gap-3 text-sm cursor-pointer">
+                                <input type="checkbox" checked={globalMatch} onChange={(e) => setGlobalMatch(e.target.checked)} className="w-5 h-5 rounded accent-indigo-600" />
+                                <span className="text-stone-600 font-medium">Match color anywhere in photo (not just connected area)</span>
                             </label>
 
                             {selections.length > 0 && (
-                                <div className="flex items-center justify-between text-sm">
-                                    <div className="text-gray-500">{selections.length} region{selections.length > 1 ? "s" : ""} selected</div>
-                                    <button className="underline" onClick={undoSelection}>Undo last</button>
+                                <div className="flex items-center justify-between text-sm pt-3 border-t border-stone-50">
+                                    <div className="text-stone-400 text-xs font-medium">{selections.length} region{selections.length > 1 ? "s" : ""} selected</div>
+                                    <button className="text-xs font-bold text-stone-900 hover:text-indigo-600 transition-colors uppercase tracking-tight" onClick={undoSelection}>Undo last</button>
                                 </div>
                             )}
 
                             <button
-                                className="text-sm underline text-left"
+                                className="text-xs font-bold text-stone-400 hover:text-stone-900 transition-colors text-left uppercase tracking-wide"
                                 onMouseDown={() => toggleOriginal(true)}
                                 onMouseUp={() => toggleOriginal(false)}
                                 onMouseLeave={() => showOriginal && toggleOriginal(false)}
                             >
                                 Hold to compare with original
                             </button>
-                        </div>
+                        </section>
 
-                        <div className="flex gap-2">
-                            <button className="flex-1 bg-black text-white font-bold px-4 py-2 rounded-xl" onClick={handleDownload}>
+                        <div className="flex gap-3">
+                            <button className="flex-1 bg-indigo-600 hover:bg-indigo-700 transition-all hover:-translate-y-0.5 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-100" onClick={handleDownload}>
                                 Download
                             </button>
-                            <button className="px-4 py-2 rounded-xl border" onClick={reset}>
+                            <button className="px-6 py-4 rounded-2xl border border-stone-200 text-stone-600 hover:bg-stone-50 transition-colors font-bold" onClick={reset}>
                                 Reset
                             </button>
                         </div>
-                        <button className="text-sm underline" onClick={() => fileInputRef.current.click()}>
+                        <button className="text-xs font-bold text-stone-400 hover:text-stone-600 transition-colors uppercase tracking-wide" onClick={() => fileInputRef.current.click()}>
                             Upload a different photo
                         </button>
                         <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
-                    </div>
+                    </aside>
                 )}
-            </div>
+            </main>
         </div>
     );
 }
