@@ -54,7 +54,7 @@ function Gallery({ galleryRef, selectedFont, selectedFontImport, fontSize, setCo
         <div id="galleryModal" ref={galleryRef} data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
             <div className="fixed w-full h-full bg-black z-20 opacity-30 top-0 left-0"></div>
             <div class="relative w-full max-w-4xl max-h-full z-20">
-                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="relative bg-white rounded-[28px] shadow-2xl">
                     <div class="flex items-start justify-between p-4 pb-0  rounded-t dark:border-gray-600">
                         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                             Tone Inspiration Gallery
@@ -69,7 +69,7 @@ function Gallery({ galleryRef, selectedFont, selectedFontImport, fontSize, setCo
                     </div>
                     <div className="flex px-4 pb-4 border-b">
                         <div className=" font-medium pt-1">Select a Tone for Inspiration</div>
-                        <button type="button" onClick={setCol} class="p-2 mx-2 z-30 text-sm font-medium text-white inline-flex items-center bg-gray-700 hover:bg-white hover:text-black rounded-lg text-center ">
+                        <button type="button" onClick={setCol} class="p-2 mx-2 z-30 text-sm font-medium text-white inline-flex items-center bg-indigo-600 hover:bg-indigo-700 rounded-lg text-center ">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" fill="currentColor" class="w-3.5 h-3.5"><path d="M274.9 34.3c-28.1-28.1-73.7-28.1-101.8 0L34.3 173.1c-28.1 28.1-28.1 73.7 0 101.8L173.1 413.7c28.1 28.1 73.7 28.1 101.8 0L413.7 274.9c28.1-28.1 28.1-73.7 0-101.8L274.9 34.3zM200 224a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM96 200a24 24 0 1 1 0 48 24 24 0 1 1 0-48zM224 376a24 24 0 1 1 0-48 24 24 0 1 1 0 48zM352 200a24 24 0 1 1 0 48 24 24 0 1 1 0-48zM224 120a24 24 0 1 1 0-48 24 24 0 1 1 0 48zm96 328c0 35.3 28.7 64 64 64H576c35.3 0 64-28.7 64-64V256c0-35.3-28.7-64-64-64H461.7c11.6 36 3.1 77-25.4 105.5L320 413.8V448zM480 328a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" /></svg>
                             {/* Randomize */}
                         </button>
@@ -183,7 +183,7 @@ function Info() {
                             <div className="w-full h-full bg-black absolute z-20 opacity-50">
                             </div>
                             <div className="w-full h-full flex z-30">
-                                <button type="button" value={data} onClick={SelectColor} data-modal-hide="galleryModal" class="px-5 m-auto z-30 py-2.5 text-sm font-medium text-white inline-flex items-center bg-gray-700 hover:bg-white hover:text-black rounded-lg text-center ">
+                                <button type="button" value={data} onClick={SelectColor} data-modal-hide="galleryModal" class="px-5 m-auto z-30 py-2.5 text-sm font-medium text-white inline-flex items-center bg-indigo-600 hover:bg-indigo-700 rounded-lg text-center ">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 mr-2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                                     </svg>
@@ -196,8 +196,8 @@ function Info() {
                             <link rel="stylesheet" href={selectedFontImport} crossorigin="anonymous" />
                             <div className="grow w-full m-auto flex flex-col bg-white shadow-xl" style={{ fontFamily: selectedFont, color: textColor }}>
                                 <div className="relative aspect-[3/4] w-full mx-auto" style={{ background: data }}>
-                                    <div className={"absolute bottom-7 left-2 font-medium " + "text-sm"}>{data}</div>
-                                    <div className={"absolute bottom-2 left-2 font-extrabold whitespace-nowrap " + "text-sm"}>{GetColorName(data)}</div>
+                                    <div className="absolute bottom-7 left-2 font-medium text-sm">{data}</div>
+                                    <div className="absolute bottom-2 left-2 font-extrabold whitespace-nowrap text-sm">{GetColorName(data)}</div>
                                 </div>
                             </div>
                         </div>
@@ -295,10 +295,6 @@ function Info() {
         setExportLoaded(true)
     }
 
-    function beginExporting(event) {
-        setExporting(true)
-    }
-
     function CloseShade(event) {
         shadeRef.current.classList.add("-translate-x-full");
     }
@@ -334,7 +330,7 @@ function Info() {
                     <div className="w-full h-full bg-black absolute z-20 opacity-50">
                     </div>
                     <div className="w-full h-full flex z-30">
-                        <button type="button" value={shade} onClick={SelectShade} data-modal-hide="galleryModal" class="px-5 m-auto z-30 py-2.5 text-sm font-medium text-white inline-flex items-center bg-gray-700 hover:bg-white hover:text-black rounded-lg text-center ">
+                        <button type="button" value={shade} onClick={SelectShade} data-modal-hide="galleryModal" class="px-5 m-auto z-30 py-2.5 text-sm font-medium text-white inline-flex items-center bg-indigo-600 hover:bg-indigo-700 rounded-lg text-center ">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 mr-2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                             </svg>
@@ -348,11 +344,11 @@ function Info() {
     }
 
     return (
-        <div className="relative w-screen min-h-screen flex flex-col overflow-x-hidden bg-gray-100">
-            <div className="relative w-screen p-4 shadow-md flex">
-                <a className="flex" href="/">
-                    <img src="./tonio.png" className="w-8 aspect-square my-auto mx-2" />
-                    <div className="font-medium text-3xl mb-1">Tone.io</div>
+        <div className="relative w-screen min-h-screen flex flex-col overflow-x-hidden bg-[#FAF8F5]">
+            <div className="relative w-screen px-6 py-4 border-b border-[#EFECE6] bg-white flex">
+                <a className="flex items-center gap-2" href="/">
+                    <img src="./tonio.png" className="w-8 aspect-square my-auto rounded-lg" alt="Tone.io" />
+                    <div className="font-display font-bold text-2xl tracking-tight">Tone.io</div>
                 </a>
             </div>
 
@@ -375,7 +371,7 @@ function Info() {
                 <div className="fixed w-full h-full bg-black z-20 opacity-30 top-0 left-0"></div>
                 <div class="relative w-full max-w-2xl max-h-full z-20">
 
-                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <div class="relative bg-white rounded-[28px] shadow-2xl">
 
                         <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
@@ -389,7 +385,7 @@ function Info() {
                             </button>
                         </div>
                         <div className="flex m-auto">
-                            <img src={imgSrc} onLoad={exportLoad} className={exportLoaded ? "mx-auto w-1/3 m-3 shadow-lg" : "mx-auto w-1/3 m-3 shadow-lg hidden"} />
+                            <img src={imgSrc} onLoad={exportLoad} alt="Exported swatch" className={exportLoaded ? "mx-auto w-1/3 m-3 shadow-lg" : "mx-auto w-1/3 m-3 shadow-lg hidden"} />
                             <div className={exportLoaded ? "hidden" : "flex items-center justify-center mx-auto h-max p-5 w-1/3 m-3 bg-gray-300 rounded dark:bg-gray-700"}>
                                 <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
                                     <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z" />
@@ -422,7 +418,7 @@ function Info() {
             <div id="staticModal" ref={modalRef} data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
                 <div className="fixed w-full h-full bg-black z-20 opacity-30 top-0 left-0"></div>
                 <div class="relative w-full max-w-2xl max-h-full z-20">
-                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <div class="relative bg-white rounded-[28px] shadow-2xl">
                         <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                                 Customize your image
@@ -434,7 +430,7 @@ function Info() {
                             <ul class="grid w-full place-center grid-cols-2 md:grid-cols-4 gap-1" style={{ fontFamily: selectedFont }}>
                                 <li className="m-auto">
                                     <input type="radio" onChange={handleStyleChange} id="outlined" name="type" value={0} class="hidden peer" required />
-                                    <label for="outlined" class="flex items-center w-max p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                    <label for="outlined" class="flex items-center w-max p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-indigo-600 peer-checked:border-indigo-600 peer-checked:text-indigo-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div class="block">
                                             <div class="w-max flex">
                                                 <div className="aspect-[3/4] h-36 flex flex-col shadow-xl p-2 m-auto">
@@ -451,7 +447,7 @@ function Info() {
                                 </li>
                                 <li className="m-auto">
                                     <input type="radio" onChange={handleStyleChange} id="croptop" name="type" value={1} class="hidden peer" required />
-                                    <label for="croptop" class="flex items-center w-max p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                    <label for="croptop" class="flex items-center w-max p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-indigo-600 peer-checked:border-indigo-600 peer-checked:text-indigo-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div class="block">
                                             <div class="w-max flex">
                                                 <div className="aspect-[3/4] h-36 flex flex-col shadow-xl m-auto">
@@ -468,7 +464,7 @@ function Info() {
                                 </li>
                                 <li className="m-auto">
                                     <input type="radio" id="buzzcut" onChange={handleStyleChange} name="type" value={2} class="hidden peer" required />
-                                    <label for="buzzcut" class="flex items-center w-max p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                    <label for="buzzcut" class="flex items-center w-max p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-indigo-600 peer-checked:border-indigo-600 peer-checked:text-indigo-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div class="block">
                                             <div class="w-max flex">
                                                 <div className="aspect-[3/4] h-36 flex flex-col shadow-xl m-auto">
@@ -483,7 +479,7 @@ function Info() {
                                 </li>
                                 <li className="m-auto">
                                     <input type="radio" id="cleancut" name="type" onChange={handleStyleChange} value={3} class="hidden peer" required />
-                                    <label for="cleancut" class="flex items-center w-max p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                    <label for="cleancut" class="flex items-center w-max p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-indigo-600 peer-checked:border-indigo-600 peer-checked:text-indigo-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div class="block">
                                             <div class="w-max flex">
                                                 <div className="aspect-[3/4] h-36 flex flex-col m-auto">
@@ -506,7 +502,7 @@ function Info() {
                                 <li className="m-auto w-full" style={{ fontFamily: "Montserrat" }}>
                                     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat" crossorigin="anonymous" />
                                     <input type="radio" onChange={handleFontChange} id="Montserrat" name="font" value="Montserrat" class="hidden peer" required />
-                                    <label for="Montserrat" class="text-left flex flex-col w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                    <label for="Montserrat" class="text-left flex flex-col w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-indigo-600 peer-checked:border-indigo-600 peer-checked:text-indigo-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div className="font-semibold text-md text-black text-left ">Montserrat</div>
                                         <div className="font-semibold text-lighter text-xs text-left ">Geometric.</div>
                                     </label>
@@ -514,7 +510,7 @@ function Info() {
                                 <li className="m-auto w-full" style={{ fontFamily: "DM Sans" }}>
                                     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=DM+Sans" crossorigin="anonymous" />
                                     <input type="radio" onChange={handleFontChange} id="DM Sans" name="font" value="DM Sans" class="hidden peer" required />
-                                    <label for="DM Sans" class="text-left flex flex-col p-5 w-full text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                    <label for="DM Sans" class="text-left flex flex-col p-5 w-full text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-indigo-600 peer-checked:border-indigo-600 peer-checked:text-indigo-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div className="font-semibold text-md text-black text-left">DM Sans</div>
                                         <div className="font-semibold text-lighter text-xs text-left">Modern.</div>
                                     </label>
@@ -522,7 +518,7 @@ function Info() {
                                 <li className="m-auto w-full" style={{ fontFamily: "Sacramento" }}>
                                     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sacramento" crossorigin="anonymous" />
                                     <input type="radio" onChange={handleFontChange} id="Sacramento" name="font" value="Sacramento" class="hidden peer" required />
-                                    <label for="Sacramento" class="text-left flex flex-col p-5 w-full text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                    <label for="Sacramento" class="text-left flex flex-col p-5 w-full text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-indigo-600 peer-checked:border-indigo-600 peer-checked:text-indigo-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div className="font-semibold text-md text-black text-left">Sacramento</div>
                                         <div className="font-semibold text-lighter text-xs text-left">Sweet.</div>
                                     </label>
@@ -530,7 +526,7 @@ function Info() {
                                 <li className="m-auto w-full" style={{ fontFamily: "Raleway" }}>
                                     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway" crossorigin="anonymous" />
                                     <input type="radio" onChange={handleFontChange} id="Raleway" name="font" value="Raleway" class="hidden peer" required />
-                                    <label for="Raleway" class="text-left flex flex-col p-5 w-full text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                    <label for="Raleway" class="text-left flex flex-col p-5 w-full text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-indigo-600 peer-checked:border-indigo-600 peer-checked:text-indigo-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div className="font-semibold text-md text-black text-left">Raleway</div>
                                         <div className="font-semibold text-lighter text-xs text-left">Minimalist.</div>
                                     </label>
@@ -538,15 +534,15 @@ function Info() {
                                 <li className="m-auto w-full" style={{ fontFamily: "Josefin Sans" }}>
                                     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin Sans" crossorigin="anonymous" />
                                     <input type="radio" onChange={handleFontChange} id="Josefin Sans" name="font" value="Josefin Sans" class="hidden peer" required />
-                                    <label for="Josefin Sans" class="text-left flex flex-col p-5 w-full text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                    <label for="Josefin Sans" class="text-left flex flex-col p-5 w-full text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-indigo-600 peer-checked:border-indigo-600 peer-checked:text-indigo-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div className="font-semibold text-md text-black text-left">Josefin Sans</div>
                                         <div className="font-semibold text-lighter text-xs text-left">Art Deco.</div>
                                     </label>
                                 </li>
                                 <li className="m-auto w-full">
-                                    <label class="text-left flex flex-col p-3 w-full text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                    <label class="text-left flex flex-col p-3 w-full text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-indigo-600 peer-checked:border-indigo-600 peer-checked:text-indigo-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div className="font-semibold text-md text-black text-left mb-1">Get a random font</div>
-                                        <button type="button" onClick={setRandomFont} class="p-2 mx-2 z-30 text-sm font-medium text-white inline-flex items-center bg-gray-700 hover:bg-white hover:text-black rounded-lg text-center ">
+                                        <button type="button" onClick={setRandomFont} class="p-2 mx-2 z-30 text-sm font-medium text-white inline-flex items-center bg-indigo-600 hover:bg-indigo-700 rounded-lg text-center ">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" fill="currentColor" class="w-3.5 h-3.5 mr-2"><path d="M274.9 34.3c-28.1-28.1-73.7-28.1-101.8 0L34.3 173.1c-28.1 28.1-28.1 73.7 0 101.8L173.1 413.7c28.1 28.1 73.7 28.1 101.8 0L413.7 274.9c28.1-28.1 28.1-73.7 0-101.8L274.9 34.3zM200 224a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM96 200a24 24 0 1 1 0 48 24 24 0 1 1 0-48zM224 376a24 24 0 1 1 0-48 24 24 0 1 1 0 48zM352 200a24 24 0 1 1 0 48 24 24 0 1 1 0-48zM224 120a24 24 0 1 1 0-48 24 24 0 1 1 0 48zm96 328c0 35.3 28.7 64 64 64H576c35.3 0 64-28.7 64-64V256c0-35.3-28.7-64-64-64H461.7c11.6 36 3.1 77-25.4 105.5L320 413.8V448zM480 328a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" /></svg>
                                             Randomize
                                         </button>
@@ -556,7 +552,7 @@ function Info() {
                         </div>
                         <div className="p-6 pt-3 pb-2 h-min">
                             <label for="countries" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">More Font Options</label>
-                            <select onChange={handleFontChange} id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <select onChange={handleFontChange} id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 <option selected disabled>Choose From Dropdown</option>
                                 {getFontsList()}
                             </select>
@@ -564,42 +560,42 @@ function Info() {
                         <div class="p-6 h-min flex flex-col">
                             <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Font Size</h3>
                             <div class="inline-flex rounded-md shadow-sm mx-auto">
-                                {/* <button onClickCapture={changeFontSize} class="px-4 py-2 text-xs font-bold text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+                                {/* <button onClickCapture={changeFontSize} class="px-4 py-2 text-xs font-bold text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-indigo-500 focus:text-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
                                         XS
                                     </button> */}
                                 <div>
                                     <input type="radio" onChange={changeFontSize} id="sm" name="fontsize" value="text-sm" class="hidden peer" required />
-                                    <label for="sm" class="px-4 py-2 text-md font-medium text-gray-900 bg-white border rounded-l-lg border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 cursor-pointer peer-checked:text-blue-500 peer-checked:border-blue-600">
+                                    <label for="sm" class="px-4 py-2 text-md font-medium text-gray-900 bg-white border rounded-l-lg border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-indigo-500 focus:text-indigo-600 cursor-pointer peer-checked:text-indigo-600 peer-checked:border-indigo-600">
                                         SM
                                     </label>
                                 </div>
                                 <div>
                                     <input type="radio" onChange={changeFontSize} id="md" name="fontsize" value="text-md" class="hidden peer" required />
-                                    <label for="md" class="px-4 py-2 text-md font-semibold text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 cursor-pointer peer-checked:text-blue-500 peer-checked:border-blue-600">
+                                    <label for="md" class="px-4 py-2 text-md font-semibold text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-indigo-500 focus:text-indigo-600 cursor-pointer peer-checked:text-indigo-600 peer-checked:border-indigo-600">
                                         MD
                                     </label>
                                 </div>
                                 <div>
                                     <input type="radio" onChange={changeFontSize} id="lg" name="fontsize" value="text-lg" class="hidden peer" required />
-                                    <label for="lg" class="px-4 py-2 text-md font-bold text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 cursor-pointer peer-checked:text-blue-500 peer-checked:border-blue-600">
+                                    <label for="lg" class="px-4 py-2 text-md font-bold text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-indigo-500 focus:text-indigo-600 cursor-pointer peer-checked:text-indigo-600 peer-checked:border-indigo-600">
                                         LG
                                     </label>
                                 </div>
                                 <div>
                                     <input type="radio" onChange={changeFontSize} id="xl" name="fontsize" value="text-xl" class="hidden peer" required />
-                                    <label for="xl" class="px-4 py-2 text-md font-extrabold text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 cursor-pointer peer-checked:text-blue-500 peer-checked:border-blue-600">
+                                    <label for="xl" class="px-4 py-2 text-md font-extrabold text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-indigo-500 focus:text-indigo-600 cursor-pointer peer-checked:text-indigo-600 peer-checked:border-indigo-600">
                                         XL
                                     </label>
                                 </div>
                                 <div>
                                     <input type="radio" onChange={changeFontSize} id="2xl" name="fontsize" value="text-2xl" class="hidden peer" required />
-                                    <label for="2xl" class="px-4 py-2 text-md font-black text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 cursor-pointer peer-checked:text-blue-500 peer-checked:border-blue-600">
+                                    <label for="2xl" class="px-4 py-2 text-md font-black text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-indigo-500 focus:text-indigo-600 cursor-pointer peer-checked:text-indigo-600 peer-checked:border-indigo-600">
                                         2XL
                                     </label>
                                 </div>
                                 <div>
                                     <input type="radio" onChange={changeFontSize} id="3xl" name="fontsize" value="text-3xl" class="hidden peer" required />
-                                    <label for="3xl" class="px-4 py-2 text-md font-black text-gray-900 bg-white border border-gray-200 rounded-r-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 cursor-pointer peer-checked:text-blue-500 peer-checked:border-blue-600">
+                                    <label for="3xl" class="px-4 py-2 text-md font-black text-gray-900 bg-white border border-gray-200 rounded-r-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-indigo-500 focus:text-indigo-600 cursor-pointer peer-checked:text-indigo-600 peer-checked:border-indigo-600">
                                         3XL
                                     </label>
                                 </div>
@@ -608,16 +604,16 @@ function Info() {
 
 
                         <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
-                            <button data-modal-hide="staticModal" onClick={CloseModal} type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                            <button data-modal-hide="staticModal" onClick={CloseModal} type="button" class="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-200 font-medium rounded-xl text-sm px-5 py-2.5 text-center">Submit</button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div className="md:p-5 p-1 m-auto w-5/6 ">
-                <div className="font-bold md:text-4xl text-2xl">Customize</div>
-                <div className="font-medium md:text-md text-sm">Create a Tone Swatch</div>
-                <button onClick={OpenGallery} data-modal-target="galleryModal" data-modal-toggle="galleryModal" className="flex p-1.5 rounded-lg bg-black text-white hover:bg-white hover:text-black gap-2 mt-2">
+                <div className="font-display font-bold md:text-4xl text-2xl">Customize</div>
+                <div className="font-medium md:text-md text-sm text-stone-500">Create a Tone Swatch</div>
+                <button onClick={OpenGallery} data-modal-target="galleryModal" data-modal-toggle="galleryModal" className="flex p-2 px-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 gap-2 mt-3 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 m-auto" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                     </svg>
@@ -632,9 +628,9 @@ function Info() {
                             <Cleancut color={color} selectedFont={selectedFont} selectedFontImport={selectedFontImport} elementRef={elementRef} colorName={colorName} fontSize={fontSize} />,
                         ][elemInd]}
                         <div className="flex gap-x-3 mx-auto">
-                            <button data-modal-target="exportModal" data-modal-toggle="exportModal" className="appearance-none my-2 mt-4 flex font-bold px-4 bg-black text-white gap-x-1 rounded-2xl hover:bg-white hover:text-black" onClick={handleSave}>
+                            <button data-modal-target="exportModal" data-modal-toggle="exportModal" className="appearance-none my-2 mt-4 flex font-bold px-4 bg-[#1A1A1A] text-white gap-x-1 rounded-2xl hover:bg-indigo-600 transition-colors" onClick={handleSave}>
                                 {exporting ?
-                                    <svg aria-hidden="true" class="w-4 aspect-square my-auto mr-2 text-gray-200 animate-spin fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <svg aria-hidden="true" class="w-4 aspect-square my-auto mr-2 text-gray-200 animate-spin fill-indigo-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
                                         <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
                                     </svg> :
@@ -645,7 +641,7 @@ function Info() {
 
                                 <div className="pt-1 pb-2">Export</div>
                             </button>
-                            <button data-modal-target="staticModal" onClick={OpenModal} data-modal-toggle="staticModal" className="flex gap-x-1 text-black my-auto mt-4 my-2 px-4 hover:underline">
+                            <button data-modal-target="staticModal" onClick={OpenModal} data-modal-toggle="staticModal" className="flex gap-x-1 text-stone-600 my-auto mt-4 my-2 px-4 hover:text-indigo-600 hover:underline">
                                 <svg className="w-4 aspect-square my-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                 </svg>
@@ -653,7 +649,7 @@ function Info() {
                             </button>
                         </div>
                         <div className="flex mx-auto">
-                            <button onClick={OpenShade} type="button" data-drawer-target="drawer-example" data-drawer-show="drawer-example" aria-controls="drawer-example" className="flex gap-x-1 text-black my-auto px-4 bg-white hover:bg-black hover:text-white rounded-lg shadow">
+                            <button onClick={OpenShade} type="button" data-drawer-target="drawer-example" data-drawer-show="drawer-example" aria-controls="drawer-example" className="flex gap-x-1 text-stone-700 my-auto px-4 bg-white hover:bg-[#1A1A1A] hover:text-white rounded-xl shadow-sm border border-stone-100">
                                 {/* <svg className="w-4 aspect-square my-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                 </svg> */}
