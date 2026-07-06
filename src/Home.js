@@ -15,9 +15,12 @@ function Home() {
                 <div className="m-auto ">
                     <div className=" text-center font-bold text-8xl ">Tone.io</div>
                     <div className="text-xl text-center mt-2">Add Some Color to Your Life</div>
-                    <div className="flex mt-4">
+                    <div className="flex mt-4 gap-x-3">
                         <a href="/customize" className="text-md font-bold text-center bg-black text-white border-black  px-4 pt-1 pb-2 rounded-xl m-auto  hover:bg-gradient hover:bg-gradient-to-tr hover:from-purple-600 hover:to-orange-500 hover:rounded-xl hover:border-white">
                             Develop Your Tones
+                        </a>
+                        <a href="/recolor" className="text-md font-bold text-center bg-white text-black border border-black px-4 pt-1 pb-2 rounded-xl m-auto hover:bg-gradient hover:bg-gradient-to-tr hover:from-purple-600 hover:to-orange-500 hover:text-white hover:border-white">
+                            Recolor a Photo
                         </a>
                     </div>
                 </div> 
