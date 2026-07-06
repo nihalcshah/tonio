@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Home from './Home';
 import Info from './Inf'
+import PhotoRecolor from './PhotoRecolor'
 import "./index.css"
 import 'flowbite'
 import {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/customize",
     element: <Info />,
+  },
+  {
+    path: "/recolor",
+    element: <PhotoRecolor />,
   },
 ]
 );
