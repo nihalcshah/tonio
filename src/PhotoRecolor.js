@@ -49,6 +49,7 @@ function hexToRgb(hex) {
 }
 
 const MAX_DIM = 1100;
+const QUICK_PALETTE = ["#E7E5E4", "#F87171", "#FB923C", "#FACC15", "#4ADE80", "#60A5FA", "#4F46E5", "#A78BFA", "#F472B6", "#1C1917"];
 
 function PhotoRecolor() {
     const canvasRef = useRef(null);
@@ -246,6 +247,18 @@ function PhotoRecolor() {
                             <div className="flex items-center justify-between mb-5">
                                 <span className="font-bold text-sm uppercase tracking-widest text-stone-400">Palette</span>
                                 <div className="w-7 h-7 rounded-lg shadow-sm border-2 border-white ring-1 ring-stone-100" style={{ backgroundColor: color }}></div>
+                            </div>
+                            <div className="grid grid-cols-5 gap-3 mb-6">
+                                {QUICK_PALETTE.map((swatch) => (
+                                    <button
+                                        key={swatch}
+                                        type="button"
+                                        aria-label={swatch}
+                                        onClick={() => setColor(swatch)}
+                                        className={"w-full aspect-square rounded-lg transition-all ring-offset-2 " + (color.toLowerCase() === swatch.toLowerCase() ? "ring-2 ring-indigo-600" : "hover:ring-2 hover:ring-indigo-600")}
+                                        style={{ backgroundColor: swatch }}
+                                    />
+                                ))}
                             </div>
                             <SketchPicker color={color} onChangeComplete={(c) => setColor(c.hex)} className="!w-full !shadow-none !border !border-stone-100 !rounded-xl" />
                         </section>
