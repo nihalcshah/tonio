@@ -214,7 +214,7 @@ function Info() {
     const [imgSrc, setImgSrc] = useState("")
     const [fontList, setFontList] = useState([])
     const [exportLoaded, setExportLoaded] = useState(false)
-    const [paletteColors, setPaletteColors] = useState(generateRandomColors(16))
+    const [paletteColors, setPaletteColors] = useState(() => generateRandomColors(16))
 
 
     useEffect(() => {
