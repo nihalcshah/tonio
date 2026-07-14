@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 function ServerlessDemo() {
   const [message, setMessage] = useState('Loading...');
-  const [name, setName] = useState('');
   const [inputValue, setInputValue] = useState('');
 
   // Function to call the serverless function
@@ -26,7 +25,6 @@ function ServerlessDemo() {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    setName(inputValue);
     callFunction(inputValue);
   };
 

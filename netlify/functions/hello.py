@@ -6,9 +6,9 @@ def handler(event, context):
     # This is the function Netlify will call
     # Get request parameters if any
     try:
-        params = event.get('queryStringParameters', {})
+        params = event.get('queryStringParameters') or {}
         name = params.get('name', 'World')
-    except:
+    except (AttributeError, TypeError):
         name = 'World'
     
     # Create response
