@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import Home from './Home';
 import Info from './Inf'
 import PhotoRecolor from './PhotoRecolor'
+import ServerlessDemo from './ServerlessDemo';
 import "./index.css"
 import 'flowbite'
 import {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/recolor",
     element: <PhotoRecolor />,
+  },
+  {
+    path: "/serverless",
+    element: <ServerlessDemo />,
   },
 ]
 );
