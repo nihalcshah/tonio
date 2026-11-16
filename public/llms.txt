@@ -1,0 +1,12 @@
+# Tone.io image tools
+
+Guide: /agents
+
+GET /api/image?color=%234f46e5&style=square&size=1024 returns an actual standalone image/svg+xml image (CORS enabled). No authentication. Invalid options return 400 JSON. GET and HEAD supported.
+Options: color (#RGB/#RRGGBB), name (up to 120 chars; default color name), style (outlined|croptop|buzzcut|square; default square), size (integer width128..4096; default1024), fontSize (8..32 at base width288; default14), font (default Arial). HTTP SVG supports Arial, Helvetica, Georgia, Verdana, monospace, serif, sans-serif. Viewer installed fonts determine SVG text appearance.
+
+PNG: visit /image with the same query. Await window.tonioImage.ready. status is ready or error; result on success includes {dataUrl,mimeType,width,height,options}; error on failure contains explanation. img#tone-image is inspectable. PNG route is a browser page, not a raw PNG HTTP response. PNG supports Google Fonts family names; external fonts must load successfully.
+
+Normal editor: /customize accepts the same recipe query. window.tonio.version = 1; getState(); configure(recipe); await exportImage(overrides); await preview(overrides); permalink(). exportImage returns {dataUrl,mimeType,width,height,options}. No random/time/viewport inputs. Save all recipe options for repeatability; PNG bytes can differ across browsers/platforms/fonts.
+
+Photo recolor: /recolor. window.tonioRecolor.version = 1; await ready(); await load(Blob|data:image URL); state(); await configure({color:'#RRGGBB',tolerance:1..100,globalMatch:boolean}); await select({x,y,mode:'add'|'subtract'}); await undo(); await reset(); await compare(boolean); await export({original?:boolean}). Export returns {dataUrl,mimeType,width,height,recipe,original}. Source is resized to maximum dimension1100. Selection coordinates use those source pixel dimensions. Calls serialized. Compare affects preview only; normal export always returns recolored result. Save source+recipe and replay configure+selections to repeat. All photo processing is browser-local.
