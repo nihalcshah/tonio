@@ -41,14 +41,14 @@ export default function AgentImages() {
         ['color', '#RGB or #RRGGBB / #4f46e5 (URL encode # as %23)'],
         ['style', 'outlined, croptop, buzzcut, square / square'],
         ['name', 'Label, up to 120 characters / color name'],
-        ['size', 'Output width, integer 128–4096 / 1024; square gives equal height'],
+        ['size', 'Output width, integer 128–4096 / 1024; square and buzzcut give equal height'],
         ['fontSize', '8–32 pixels at base width 288 / 14; scales with output'],
         ['font', 'Browser PNG: Google Fonts family or system font / Arial. HTTP SVG: Arial, Helvetica, Georgia, Verdana, monospace, serif, sans-serif.'],
       ].map(([key, value]) => <tr key={key} className="border-t"><td className="p-2 font-mono">{key}</td><td>{value}</td></tr>)}
     </tbody></table></div>
     <p>All settings are explicit in editor permalinks. No clock, random seed, viewport, or device pixel ratio affects exports. PNGs repeat pixel-for-pixel with the same recipe, fonts, and browser environment. Font rasterization can differ between platforms; Google Fonts requires network access. Standalone SVG uses the viewer’s installed fonts.</p>
     <h2 className="text-2xl font-bold">Control the normal editor</h2>
-    <p>On <a className="underline" href="/customize">/customize</a>, the same controls and exports are available through the versioned browser API. Returned data URLs can be saved or loaded into an image viewer.</p>
+    <p>On <a className="underline" href="/customize">/customize</a>, wait until <code>window.tonio?.version === 1</code> in the page’s JavaScript context. The same controls and exports are available through the versioned browser API. Export returns the PNG in <code>dataUrl</code>: decode its base64 payload and save it as a PNG to extract the file, or inspect it with <code>preview()</code>. No menu interaction is required. Every page links <a className="underline" href="/.well-known/agent.json">machine-readable capabilities</a> and plain text instructions in its HTML and HTTP headers.</p>
     <pre className="p-4 bg-white rounded-xl overflow-auto text-sm">{`window.tonio.getState()\nwindow.tonio.configure({color:'#4f46e5', style:'square', font:'Arial'})\nconst image = await window.tonio.exportImage({size:1024})\n// {dataUrl, mimeType, width, height, options}\nawait window.tonio.preview() // inspect exported image in editor\nwindow.tonio.permalink() // all current recipe settings`}</pre>
     <h2 className="text-2xl font-bold">Recolor photos</h2>
     <p>On <a className="underline" href="/recolor">/recolor</a>, load a local Blob or data URL and use the same selection, tolerance, global matching, comparison, undo, reset, and export operations as the UI. Coordinates refer to the processed original image (maximum dimension 1100), reported by state. Calls are serialized and await rendering.</p>

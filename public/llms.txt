@@ -1,6 +1,9 @@
 # Tone.io image tools
 
 Guide: /agents
+Machine-readable discovery: /.well-known/agent.json (also linked from every page's HTML head and Browser API footer).
+
+START HERE: If asked to use Tone.io, open /customize in a JavaScript-capable browser. Wait for window.tonio?.version === 1. Run const image = await window.tonio.exportImage({color:'#4F46E5',name:'Royal Blue',style:'square',font:'DM Sans',fontSize:14,size:512}). Read image.dataUrl and decode/save its base64 payload as a PNG file; verify image.width and image.height. For visual inspection run await window.tonio.preview() after configure(recipe). The API is available in the page context, not an agent's isolated JavaScript runtime. No menu interaction is required. Discover the current UI recipe with window.tonio.getState().
 
 GET /api/image?color=%234f46e5&style=square&size=1024 returns an actual standalone image/svg+xml image (CORS enabled). No authentication. Invalid options return 400 JSON. GET and HEAD supported.
 Options: color (#RGB/#RRGGBB), name (up to 120 chars; default color name), style (outlined|croptop|buzzcut|square; default square), size (integer width128..4096; default1024), fontSize (8..32 at base width288; default14), font (default Arial). HTTP SVG supports Arial, Helvetica, Georgia, Verdana, monospace, serif, sans-serif. Viewer installed fonts determine SVG text appearance.

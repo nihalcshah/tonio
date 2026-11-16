@@ -20,7 +20,8 @@ function normalizeTone(input = {}) {
 function layoutTone(input) {
   const options = normalizeTone(input), { color, style, size } = options;
   const white = style === 'outlined' || style === 'croptop';
-  const baseHeight = style === 'square' ? 288 : style === 'buzzcut' ? 346 : style === 'outlined' ? 400 : 428;
+  // Filled swatches keep a square canvas, including the labels inside its bounds.
+  const baseHeight = style === 'square' || style === 'buzzcut' ? 288 : style === 'outlined' ? 400 : 428;
   const inset = style === 'outlined' ? 16 : 0, top = style === 'outlined' ? 24 : 0;
   const rgb = color.slice(1).match(/../g).map(v => parseInt(v, 16) / 255).map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4);
   const luminance = .2126 * rgb[0] + .7152 * rgb[1] + .0722 * rgb[2];
