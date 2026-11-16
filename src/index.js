@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import Home from './Home';
 import Info from './Inf'
 import PhotoRecolor from './PhotoRecolor'
+import AgentImages, { ImageView } from './AgentImages'
 import ServerlessDemo from './ServerlessDemo';
 import "./index.css"
 import 'flowbite'
@@ -12,6 +13,8 @@ import {
 } from "react-router-dom";
 
 const router = createBrowserRouter([
+  { path: "/agents", element: <AgentImages /> },
+  { path: "/image", element: <ImageView /> },
   {
     path: "/",
     element: <Home />,

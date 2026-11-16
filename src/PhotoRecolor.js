@@ -51,56 +51,7 @@ function hexToRgb(hex) {
 const MAX_DIM = 1100;
 const QUICK_PALETTE = ["#E7E5E4", "#F87171", "#FB923C", "#FACC15", "#4ADE80", "#60A5FA", "#4F46E5", "#A78BFA", "#F472B6", "#1C1917"];
 
-function PhotoRecolor() {
-    const canvasRef = useRef(null);
-    const fileInputRef = useRef(null);
-    const originalDataRef = useRef(null);
-    const [hasImage, setHasImage] = useState(false);
-    const [selections, setSelections] = useState([]);
-    const [tolerance, setTolerance] = useState(35);
-    const [color, setColor] = useState("#4f6df5");
-    const [globalMatch, setGlobalMatch] = useState(false);
-    const [showOriginal, setShowOriginal] = useState(false);
-
-    function handleFile(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                let { width, height } = img;
-                const scale = Math.min(1, MAX_DIM / Math.max(width, height));
-                width = Math.round(width * scale);
-                height = Math.round(height * scale);
-                const canvas = canvasRef.current;
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0, width, height);
-                originalDataRef.current = ctx.getImageData(0, 0, width, height);
-                setHasImage(true);
-                setSelections([]);
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function handleCanvasClick(event) {
-        const canvas = canvasRef.current;
-        const rect = canvas.getBoundingClientRect();
-        const x = Math.floor((event.clientX - rect.left) * (canvas.width / rect.width));
-        const y = Math.floor((event.clientY - rect.top) * (canvas.height / rect.height));
-        const mode = event.shiftKey ? "subtract" : "add";
-        setSelections((prev) => [...prev, { x, y, mode }]);
-    }
-
-    function undoSelection() {
-        setSelections((prev) => prev.slice(0, -1));
-    }
-
-    function matchRegion(data, width, height, point, tolSq, global) {
+function matchRegion(data, width, height, point, tolSq, global) {
         const mask = new Uint8Array(width * height);
         const startIdx = (point.y * width + point.x) * 4;
         const sr = data[startIdx], sg = data[startIdx + 1], sb = data[startIdx + 2];
@@ -138,69 +89,187 @@ function PhotoRecolor() {
         return mask;
     }
 
-    const recolor = useCallback(() => {
-        const original = originalDataRef.current;
-        if (!original || selections.length === 0) return;
-        const { width, height, data } = original;
-        const out = new Uint8ClampedArray(data);
-        const tolSq = (tolerance * 2.55) * (tolerance * 2.55);
-        const mask = new Uint8Array(width * height);
+function PhotoRecolor() {
+    const canvasRef = useRef(null);
+    const fileInputRef = useRef(null);
+    const originalDataRef = useRef(null);
+    const [hasImage, setHasImage] = useState(false);
+    const [selections, setSelections] = useState([]);
+    const [tolerance, setTolerance] = useState(35);
+    const [color, setColor] = useState("#4f6df5");
+    const [globalMatch, setGlobalMatch] = useState(false);
+    const [showOriginal, setShowOriginal] = useState(false);
+    const [error, setError] = useState("");
+    // The synchronous model also backs UI actions, so export never observes a
+    // previous React render when agents configure and export in the same turn.
+    const modelRef = useRef({ color: "#4f6df5", tolerance: 35, globalMatch: false, selections: [], showOriginal: false });
+    const loadGeneration = useRef(0);
 
-        for (const point of selections) {
-            const regionMask = matchRegion(data, width, height, point, tolSq, globalMatch);
-            if (point.mode === "subtract") {
-                for (let p = 0; p < mask.length; p++) if (regionMask[p]) mask[p] = 0;
-            } else {
-                for (let p = 0; p < mask.length; p++) if (regionMask[p]) mask[p] = 1;
+    const state = useCallback(() => {
+        const original = originalDataRef.current;
+        return { version: 1, loaded: !!original, width: original?.width || 0, height: original?.height || 0,
+            ...modelRef.current, selections: modelRef.current.selections.map(point => ({ ...point })) };
+    }, []);
+
+    const renderImage = useCallback((originalOnly = false, target = canvasRef.current) => {
+        const original = originalDataRef.current;
+        if (!original) throw new Error("Load a photo first.");
+        const { width, height, data } = original;
+        const model = modelRef.current;
+        const out = new Uint8ClampedArray(data);
+        if (!originalOnly && model.selections.length) {
+            const tolSq = (model.tolerance * 2.55) ** 2;
+            const mask = new Uint8Array(width * height);
+            for (const point of model.selections) {
+                const region = matchRegion(data, width, height, point, tolSq, model.globalMatch);
+                for (let p = 0; p < mask.length; p++) {
+                    if (region[p]) mask[p] = point.mode === "subtract" ? 0 : 1;
+                }
+            }
+            const [th, ts] = rgbToHsl(...hexToRgb(model.color));
+            for (let p = 0; p < mask.length; p++) {
+                if (!mask[p]) continue;
+                const idx = p * 4;
+                const [, , l] = rgbToHsl(data[idx], data[idx + 1], data[idx + 2]);
+                const [r, g, b] = hslToRgb(th, ts, l);
+                out[idx] = r; out[idx + 1] = g; out[idx + 2] = b;
             }
         }
+        target.width = width;
+        target.height = height;
+        target.getContext("2d").putImageData(new ImageData(out, width, height), 0, 0);
+        return target;
+    }, []);
 
-        const [tr, tg, tb] = hexToRgb(color);
-        const [th, ts] = rgbToHsl(tr, tg, tb);
+    const update = useCallback((patch) => {
+        modelRef.current = { ...modelRef.current, ...patch };
+        const model = modelRef.current;
+        setColor(model.color); setTolerance(model.tolerance); setGlobalMatch(model.globalMatch);
+        setSelections(model.selections); setShowOriginal(model.showOriginal);
+        if (originalDataRef.current) renderImage(model.showOriginal);
+        return state();
+    }, [renderImage, state]);
 
-        for (let p = 0; p < width * height; p++) {
-            if (!mask[p]) continue;
-            const idx = p * 4;
-            const [, , l] = rgbToHsl(data[idx], data[idx + 1], data[idx + 2]);
-            const [nr, ng, nb] = hslToRgb(th, ts, l);
-            out[idx] = nr; out[idx + 1] = ng; out[idx + 2] = nb;
+    const configure = useCallback((options = {}) => {
+        if (!options || typeof options !== "object" || Array.isArray(options)) throw new Error("Options must be an object.");
+        const patch = {};
+        for (const key of Object.keys(options)) {
+            if (!["color", "tolerance", "globalMatch"].includes(key)) throw new Error(`Unknown option: ${key}`);
         }
+        if (options.color !== undefined) {
+            if (typeof options.color !== "string" || !/^#[0-9a-f]{6}$/i.test(options.color)) throw new Error("Color must be #RRGGBB.");
+            patch.color = options.color.toLowerCase();
+        }
+        if (options.tolerance !== undefined) {
+            if (!Number.isFinite(options.tolerance) || options.tolerance < 1 || options.tolerance > 100) throw new Error("Tolerance must be between 1 and 100.");
+            patch.tolerance = options.tolerance;
+        }
+        if (options.globalMatch !== undefined) {
+            if (typeof options.globalMatch !== "boolean") throw new Error("globalMatch must be a boolean.");
+            patch.globalMatch = options.globalMatch;
+        }
+        return update(patch);
+    }, [update]);
 
-        const ctx = canvasRef.current.getContext("2d");
-        ctx.putImageData(new ImageData(out, width, height), 0, 0);
-    }, [selections, tolerance, color, globalMatch]);
+    const load = useCallback(async (source) => {
+        if (!(source instanceof Blob) && (typeof source !== "string" || !/^data:image\//i.test(source))) {
+            throw new Error("Load a local image Blob/File or image data URL.");
+        }
+        const generation = ++loadGeneration.current;
+        const objectUrl = source instanceof Blob ? URL.createObjectURL(source) : null;
+        const img = new Image();
+        try {
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = () => reject(new Error("This image could not be decoded."));
+                img.src = objectUrl || source;
+            });
+            if (generation !== loadGeneration.current) throw new Error("Image load was superseded by a newer image.");
+            const scale = Math.min(1, MAX_DIM / Math.max(img.width, img.height));
+            const width = Math.max(1, Math.round(img.width * scale));
+            const height = Math.max(1, Math.round(img.height * scale));
+            const canvas = canvasRef.current;
+            canvas.width = width; canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+            originalDataRef.current = ctx.getImageData(0, 0, width, height);
+            setHasImage(true); setError("");
+            return update({ selections: [], showOriginal: false });
+        } finally {
+            if (objectUrl) URL.revokeObjectURL(objectUrl);
+        }
+    }, [update]);
+
+    const select = useCallback(({ x, y, mode = "add" } = {}) => {
+        const original = originalDataRef.current;
+        if (!original) throw new Error("Load a photo first.");
+        if (!Number.isInteger(x) || !Number.isInteger(y) || x < 0 || y < 0 || x >= original.width || y >= original.height) {
+            throw new Error("Selection coordinates must be integer pixels inside the loaded image.");
+        }
+        if (!["add", "subtract"].includes(mode)) throw new Error("Selection mode must be add or subtract.");
+        return update({ selections: [...modelRef.current.selections, { x, y, mode }] });
+    }, [update]);
+
+    const undoSelection = useCallback(() => update({ selections: modelRef.current.selections.slice(0, -1) }), [update]);
+    const reset = useCallback(() => update({ selections: [], showOriginal: false }), [update]);
+    const toggleOriginal = useCallback((show) => {
+        if (typeof show !== "boolean") throw new Error("compare expects a boolean.");
+        return update({ showOriginal: show });
+    }, [update]);
+
+    const exportImage = useCallback((options = {}) => {
+        if (!options || typeof options !== "object" || Array.isArray(options)) throw new Error("Export options must be an object.");
+        if (Object.keys(options).some(key => key !== "original")) throw new Error("Only the original export option is supported.");
+        if (options.original !== undefined && typeof options.original !== "boolean") throw new Error("original must be a boolean.");
+        const canvas = renderImage(options.original === true, document.createElement("canvas"));
+        return { dataUrl: canvas.toDataURL("image/png"), mimeType: "image/png", width: canvas.width, height: canvas.height,
+            recipe: state(), original: options.original === true };
+    }, [renderImage, state]);
 
     useEffect(() => {
-        if (showOriginal) return;
-        if (selections.length === 0) {
-            if (originalDataRef.current) {
-                canvasRef.current.getContext("2d").putImageData(originalDataRef.current, 0, 0);
-            }
-        } else {
-            recolor();
-        }
-    }, [recolor, showOriginal, selections]);
+        // Serializing mutations means an un-awaited load followed immediately by
+        // configure/select/export still operates on the newly loaded photo.
+        let queue = Promise.resolve();
+        let active = true;
+        const enqueue = operation => (...args) => {
+            const result = queue.then(() => {
+                if (!active) throw new Error("The photo editor is no longer open.");
+                return operation(...args);
+            });
+            queue = result.catch(() => {});
+            return result;
+        };
+        const api = { version: 1, state, ready: enqueue(state), load: enqueue(load), configure: enqueue(configure),
+            select: enqueue(select), undo: enqueue(undoSelection), reset: enqueue(reset), compare: enqueue(toggleOriginal),
+            export: enqueue(exportImage) };
+        window.tonioRecolor = api;
+        return () => {
+            active = false;
+            // Invalidate pending loads rather than capturing the initial generation.
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            ++loadGeneration.current;
+            if (window.tonioRecolor === api) delete window.tonioRecolor;
+        };
+    }, [state, load, configure, select, undoSelection, reset, toggleOriginal, exportImage]);
 
-    function toggleOriginal(show) {
-        setShowOriginal(show);
-        const ctx = canvasRef.current.getContext("2d");
-        if (show && originalDataRef.current) {
-            ctx.putImageData(originalDataRef.current, 0, 0);
-        } else {
-            recolor();
-        }
+    function handleFile(event) {
+        const file = event.target.files[0];
+        if (file) load(file).catch(err => setError(err.message));
+    }
+
+    function handleCanvasClick(event) {
+        const canvas = canvasRef.current;
+        const rect = canvas.getBoundingClientRect();
+        const x = Math.min(canvas.width - 1, Math.max(0, Math.floor((event.clientX - rect.left) * canvas.width / rect.width)));
+        const y = Math.min(canvas.height - 1, Math.max(0, Math.floor((event.clientY - rect.top) * canvas.height / rect.height)));
+        select({ x, y, mode: event.shiftKey ? "subtract" : "add" });
     }
 
     function handleDownload() {
-        const canvas = canvasRef.current;
         const link = document.createElement("a");
         link.download = "recolored.png";
-        link.href = canvas.toDataURL("image/png");
+        link.href = exportImage().dataUrl;
         link.click();
-    }
-
-    function reset() {
-        setSelections([]);
     }
 
     return (
@@ -213,6 +282,7 @@ function PhotoRecolor() {
                 <div className="hidden md:block text-stone-400 font-medium border-l border-stone-100 pl-6 h-6 leading-6">Recolor a Photo</div>
             </header>
 
+            {error && <p role="alert" className="px-6 py-3 text-red-700">{error}</p>}
             <main className="flex flex-col md:flex-row flex-1 p-6 gap-6 max-w-[1440px] mx-auto w-full">
                 <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-3xl border border-stone-100 shadow-sm p-8 min-h-[400px]">
                     {!hasImage && (
@@ -228,6 +298,8 @@ function PhotoRecolor() {
                         </div>
                     )}
                     <canvas
+                        aria-label="Recolored photo preview"
+                        data-testid="recolor-preview"
                         ref={canvasRef}
                         onClick={handleCanvasClick}
                         className={hasImage ? "max-w-full max-h-[70vh] cursor-crosshair rounded-xl shadow-2xl border border-stone-100" : "hidden"}
@@ -254,13 +326,13 @@ function PhotoRecolor() {
                                         key={swatch}
                                         type="button"
                                         aria-label={swatch}
-                                        onClick={() => setColor(swatch)}
+                                        onClick={() => configure({ color: swatch })}
                                         className={"w-full aspect-square rounded-lg transition-all ring-offset-2 " + (color.toLowerCase() === swatch.toLowerCase() ? "ring-2 ring-indigo-600" : "hover:ring-2 hover:ring-indigo-600")}
                                         style={{ backgroundColor: swatch }}
                                     />
                                 ))}
                             </div>
-                            <SketchPicker color={color} onChangeComplete={(c) => setColor(c.hex)} className="!w-full !shadow-none !border !border-stone-100 !rounded-xl" />
+                            <SketchPicker color={color} onChangeComplete={(c) => configure({ color: c.hex })} className="!w-full !shadow-none !border !border-stone-100 !rounded-xl" />
                         </section>
 
                         <section className="bg-white rounded-3xl border border-stone-100 shadow-sm p-6 flex flex-col gap-5">
@@ -270,15 +342,15 @@ function PhotoRecolor() {
                                     <span className="text-xs font-bold font-mono px-2 py-0.5 bg-stone-50 rounded border border-stone-100 text-stone-600">{tolerance}%</span>
                                 </div>
                                 <input
-                                    type="range" min="1" max="100" value={tolerance}
-                                    onChange={(e) => setTolerance(Number(e.target.value))}
+                                    aria-label="Selection tolerance" type="range" min="1" max="100" value={tolerance}
+                                    onChange={(e) => configure({ tolerance: Number(e.target.value) })}
                                     className="w-full accent-indigo-600"
                                 />
                                 <div className="text-[11px] text-stone-400 mt-2">Higher = selects a wider range of shades near the click point.</div>
                             </div>
 
                             <label className="flex items-center gap-3 text-sm cursor-pointer">
-                                <input type="checkbox" checked={globalMatch} onChange={(e) => setGlobalMatch(e.target.checked)} className="w-5 h-5 rounded accent-indigo-600" />
+                                <input type="checkbox" checked={globalMatch} onChange={(e) => configure({ globalMatch: e.target.checked })} className="w-5 h-5 rounded accent-indigo-600" />
                                 <span className="text-stone-600 font-medium">Match color anywhere in photo (not just connected area)</span>
                             </label>
 

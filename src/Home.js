@@ -29,6 +29,7 @@ function Home() {
                     <a href="/recolor" className="inline-flex items-center justify-center px-8 py-4 font-bold text-[#1A1A1A] bg-transparent border-2 border-[#1A1A1A] rounded-full transition-all duration-200 hover:border-indigo-600 hover:text-indigo-600 hover:-translate-y-0.5">
                         Recolor a Photo
                     </a>
+                    <a href="/agents" className="inline-flex items-center underline px-4 py-4">Image API &amp; agent guide</a>
                 </div>
             </div>
 
