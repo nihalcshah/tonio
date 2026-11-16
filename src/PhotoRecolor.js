@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { SketchPicker } from "react-color";
 import "./index.css";
-import Navigation from "./Navigation";
 
 function rgbToHsl(r, g, b) {
     r /= 255; g /= 255; b /= 255;
@@ -287,8 +286,15 @@ function PhotoRecolor() {
 
     return (
         <div className="relative w-full min-h-screen flex flex-col bg-[#FAF8F5]">
-            <Navigation />
-            <div className="max-w-[1440px] w-full mx-auto px-6 pt-8"><h1 className="text-3xl font-bold">Photo recolor</h1><p className="mt-2 text-stone-600">Try a color on a surface while keeping its light and shadows.</p><p className="text-sm mt-2 text-stone-600">Photos stay in your browser. Exports are resized to at most 1100 pixels on the longest side.</p></div>
+            <header className="relative w-full px-6 py-4 flex items-center justify-between bg-white border-b border-[#EFECE6] z-10">
+                <a className="flex items-center gap-3" href="/">
+                    <img src="./tonio.png" className="w-9 aspect-square rounded-lg shadow-lg shadow-indigo-100" alt="" />
+                    <div className="font-display font-bold text-2xl tracking-tight">Tone.io</div>
+                </a>
+                <a href="/customize" className="text-sm text-indigo-600 underline">Discover colors</a>
+                <div className="hidden md:block text-stone-400 font-medium border-l border-stone-100 pl-6 h-6 leading-6">Recolor a Photo</div>
+            </header>
+
             {error && <p role="alert" className="px-6 py-3 text-red-700">{error}</p>}
             <main className="flex flex-col md:flex-row flex-1 p-6 gap-6 max-w-[1440px] mx-auto w-full">
                 <div className="flex-1 min-w-0 self-start w-full flex flex-col items-center justify-center bg-white rounded-3xl border border-stone-100 shadow-sm p-8 min-h-[400px]">
@@ -345,6 +351,7 @@ function PhotoRecolor() {
                                     />
                                 ))}
                             </div>
+                            <label htmlFor="photo-color" className="text-sm font-bold">Replacement color</label><input id="photo-color" type="color" value={color} onChange={event => configure({ color: event.target.value })} className="w-full h-12 my-3" />
                             <SketchPicker disableAlpha color={color} onChangeComplete={(c) => configure({ color: c.hex })} className="!w-full !shadow-none !border !border-stone-100 !rounded-xl" />
                         </section>
 

@@ -1,0 +1,2 @@
+# Python dependencies for Netlify functions
+# json is a built-in module, no need to specify it

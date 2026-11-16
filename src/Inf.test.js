@@ -1,4 +1,3 @@
-import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen, waitFor, cleanup } from '@testing-library/react';
 import Info from './Inf';
 import { renderTone } from './imageExport';
@@ -25,18 +24,18 @@ afterEach(cleanup);
 
 test('square shortcut exports a 1024 square directly and selects its preview', async () => {
     const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
-    render(<MemoryRouter><Info /></MemoryRouter>);
+    render(<Info />);
     fireEvent.click(screen.getByRole('button', { name: /Download square PNG/ }));
     await waitFor(() => expect(click).toHaveBeenCalledTimes(1));
     expect(renderTone).toHaveBeenCalledWith(expect.objectContaining({ style: 'square', size: 1024 }));
     expect(screen.getByLabelText('Image style')).toHaveValue('3');
-    expect(screen.getByRole('link', { name: /Save this color link/ })).toHaveAttribute('href', expect.stringContaining('style=square'));
+    expect(screen.getByRole('link', { name: /Repeat this image/ })).toHaveAttribute('href', expect.stringContaining('style=square'));
     click.mockRestore();
 });
 
 test('agent configuration and permalink preserve all explicit image settings', async () => {
     window.history.replaceState({}, '', '/customize?color=%23abcdef&style=square&font=Arial&fontSize=18&size=512&name=Example');
-    render(<MemoryRouter><Info /></MemoryRouter>);
+    render(<Info />);
     await screen.findByAltText(/Example/);
     expect(window.tonio.getState()).toEqual(expect.objectContaining({ color: '#abcdef', style: 'square', font: 'Arial', fontSize: 18, size: 512, name: 'Example' }));
     const result = await window.tonio.exportImage();
@@ -48,14 +47,14 @@ test('agent configuration and permalink preserve all explicit image settings', a
 });
 
  test('validates manual hex input and keeps color contrast tied to the current color', async () => {
-    render(<MemoryRouter><Info /></MemoryRouter>);
+    render(<Info />);
+    fireEvent.click(screen.getByRole('button', { name: 'Change Color', exact: true }));
     const input = screen.getByLabelText('Hex color');
     fireEvent.change(input, { target: { value: 'wrong' } });
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
-    expect(screen.getByRole('alert')).toHaveTextContent(/color must/);
+    expect(screen.getByRole('dialog', { name: 'Change color' })).toHaveTextContent(/color must/);
     fireEvent.change(input, { target: { value: '#ffffff' } });
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
     await waitFor(() => expect(window.tonio.getState().color).toBe('#ffffff'));
-    expect(screen.getByText(/21.00:1/)).toHaveTextContent('AA normal text');
-    expect(screen.getByText(/^1\.00:1/)).toHaveTextContent('Below AA');
+    expect(screen.getByText(/Text contrast:/)).toHaveTextContent('black 21.00:1; white 1.00:1');
  });

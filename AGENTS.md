@@ -9,3 +9,5 @@
 - Run `npm start` for development, `CI=true npm run build` for production, and `CI=true npm test -- --watchAll=false --runInBand` for tests.
 - Photo processing is local. Keep original pixel data separate from the preview, and export the edited result even while comparison is active.
 - Swatch preview and export must share `renderTone` in `src/imageExport.js`.
+
+- Preserve the existing visual design when fixing usability; the user rejected the replacement layout on 2026-11-15.

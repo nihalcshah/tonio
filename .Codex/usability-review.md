@@ -1,45 +1,56 @@
-# Tonio usability review — 2026-11-15
+# Tonio app and usability review — 2026-11-15
 
-## Product assessment
+## Outcome and scope
 
-Tone.io has a useful small-tool premise: turn a color into a reusable design artifact, or test a new surface color in a local photo. The original landing copy did not explain either output clearly. The two tools lacked consistent navigation, and discovery, picker, typography, and export controls were split across hidden panels. Useful outcomes are now explicit: inspect color values and contrast, export a swatch/CSS palette, save a recipe link, or compare and download a recolored photo.
+The original visual design is retained. The first UX pass changed the landing page and editor layout too broadly; the user rejected that direction. The original landing page, large color hero, shade sidebar, cards, typography, and orange export controls were restored. Functional fixes now live within those existing screens.
 
-This review inspected the complete React source, routes, configuration, export code, and tests, then exercised the main browser flows. It is an engineering/UX audit, not a user study or evidence of product-market fit.
+This review examined the React source, routes, image renderer, local-photo processing, configuration, dependencies, and tests, with browser checks of the principal workflows. It is an engineering and usability audit, not a user study or proof of product-market fit.
 
-## Fixed
+## Product value
 
-| Area | Finding | Result |
+Tone.io has two useful jobs: produce a reusable color artifact (PNG, CSS palette, or recipe link), and test a replacement color on a surface in a photo. Its strengths are immediate use, no account requirement, local photo processing, and repeatable exports. More features alone will not establish value; test whether people actually reuse the saved outputs or make a design decision from a recolored photo.
+
+## Findings and fixes
+
+| Area | Finding | Final change |
 | --- | --- | --- |
-| Startup | Initial checkout referenced a missing imageExport module | Integrated the parallel image API release and shared preview/export renderer |
-| Navigation | Editors linked home but not to each other; unknown paths showed router internals | Shared navigation and a usable not-found page; retained /agents, /image, /serverless |
-| Onboarding | Vague “Develop Your Tones” and decorative hero | Clear tool descriptions, output-oriented actions, local-photo privacy statement |
-| Color input | Picker modes depended on Flowbite global DOM initialization and mobile duplicated controls | One controlled responsive picker, native color input, validated manual hex input |
-| Color utility | No text-readability guidance | Black/white WCAG contrast ratios with AA normal/large-text labels |
-| Discovery | Random cards required hover to reveal generic Select buttons | Focus-visible controls with color-specific accessible names; shade sidebar and inline discovery |
-| Export | Preview/PNG could diverge; hidden styles/fonts were not reflected by radio state | One renderer retained from image API release; controlled style/font/size options and explicit square download |
-| Accessibility | Hidden radios were unreachable; div modals lacked focus trap/Escape behavior | Native dialogs and keyboard-focusable radio inputs; visible focus and reduced-motion support |
-| Photo onboarding | Required a personal image to understand the tool | Local sample-room illustration, file limit guidance, load/error states |
-| Photo input | No file size guard; same file could not be selected twice | 25 MB pre-decode guard, reset input after selection, retained decode validation |
-| Photo selection | Subtraction required Shift-click, unavailable on touch | Add/remove modes, keyboard coordinate form, undo/reset preserved |
-| Comparison | Mouse-only hold control | Persistent accessible original/edited toggle; export still always uses edited pixels |
-| Recolor fidelity | Target lightness was discarded; black/white/gray targets looked alike | Target lightness now contributes to shaded output while preserving source luminance variation |
-| Recolor performance | Flood-fill masks recomputed for every color change | Cached selection mask keyed by original, selection, tolerance, and global mode |
-| Layout | Photo preview stretched to sidebar height, leaving a large blank area | Preview aligns to the top; responsive layout retains all controls |
-| Branding | Install metadata still said React App | Tone.io install name and useful description |
-| Tests | Starter test asserted absent Learn React link | Real home, hex-validation, contrast, recipe, selection, comparison, and neutral-color regressions |
+| Initial startup | Checkout imported a missing image-export module | Integrated the completed image API release; preview/export share its renderer |
+| Color controls | Picker tabs depended on global DOM initialization | All five original picker modes retained, controlled by React; keyboard arrow navigation |
+| Manual color entry | No direct validated input in the main picker | Small hex-entry form inside the existing Change Color dialog with actionable validation |
+| Readability | No text-contrast guidance | Black/white contrast ratios inside the same dialog; normal-text 4.5:1 threshold |
+| Dialog accessibility | Div overlays lacked focus trap and Escape behavior | Native dialogs retain the original visual panels while providing browser-managed focus/Escape |
+| Radio controls | Hidden radios were not keyboard reachable and selected styles could disagree | Focusable visually-hidden radios, accessible names, controlled checked state |
+| Discovery | Hover-only generic Select buttons | Focus-visible actions with color-specific accessible names; random choices called Explore Tones |
+| Export | Repeated export actions could overlap | Export controls disabled while rendering; shared recipe/PNG behavior retained |
+| Photo onboarding | Required a personal image to try the feature | Optional local sample room in the existing upload panel |
+| File handling | No size guard; same file could not be reselected | 25 MB guard, input reset, load/error feedback; supported-format and 1100px export guidance |
+| Touch input | Subtract required Shift-click | Add/remove modes in the existing selection panel; Shift-click retained |
+| Keyboard input | Canvas-only selection had no keyboard equivalent | Optional coordinate form under “Select with a keyboard” |
+| Comparison | Mouse-only hold control | Original/edited toggle accessible by touch and keyboard; export remains the edited image |
+| Recolor fidelity | Target lightness discarded, making black/white/gray nearly identical | Target brightness contributes to shaded output, preserving original luminance variation |
+| Performance | Flood-fill masks rebuilt on every color change | Selection-mask cache keyed by original image, selections, tolerance, and global mode |
+| Preview layout | Photo area stretched to match a tall sidebar | Top-aligned preview prevents large blank space |
+| Routing | Missing pages and unexpected errors showed router internals | Useful not-found and recovery screens; existing /agents, /image, /serverless retained |
+| Branding | Install metadata still named React App | Tone.io manifest name and useful description |
+| Dependencies | Initial npm audit: 82 advisories including 5 critical | Compatible fixes plus patched React Router 7.18.5: 34 remain, 0 critical; direct remaining flagged dependency is react-scripts |
 
-## Important limits and next opportunities
+## Verification
 
-- Recoloring is RGB-tolerance flood fill, not semantic object selection. Similar colors can bleed into adjacent objects; reflections, hair, transparent surfaces, and textured boundaries need manual tolerance/subtraction. State this clearly rather than promising realistic paint simulation.
-- Photo output remains limited to 1100 pixels on its longest side. This is disclosed before upload. High-resolution export needs a separate full-resolution pipeline; removing the cap would make main-thread processing expensive.
-- Images are decoded by the browser before resizing. A 25 MB file limit is not a decoded-pixel memory bound. A worker/downsample pipeline and measured budgets are the next reliability investment for very large or hostile images.
-- Selected photos are session-local and not restored after navigation/reload. Recipes/links preserve swatches, not source photos. A local project format would add recoverability without an account.
-- External display fonts require network access. Default exported Arial works without Google Fonts. Errors should direct the user to a system font. No offline/PWA guarantee is made.
-- No account, billing, analytics, or remote photo upload was added. Validate repeat use with real users before expanding scope. The strongest next user test is: select a color, export a useful card/CSS palette, recolor a surface, and explain whether the result informed a decision.
-- CRA emits existing maintenance warnings (outdated Browserslist and Babel preset dependency). Production compilation must still pass with CI=true. Toolchain migration deserves a separate controlled change.
+- Production compilation is required with `CI=true npm run build`.
+- Tests cover recipe validation/SVG escaping, editor state and exports, hex input, contrast, recolor queue ordering, original comparison/export, invalid input, neutral brightness, subtraction, and undo/reset.
+- Browser checks confirmed the restored design, 390px page width without horizontal overflow, React picker tabs, hex updates, contrast values, native dialog dismissal, sample loading, keyboard point selection, and original/edited comparison.
+- Mocked canvas tests are not a substitute for real pixel rendering. The separate image API release also performed production browser/render/download checks; preserve its shared renderer.
 
-## Integration and retrospective
+## Remaining limitations and priorities
 
-Two chats were editing the same root concurrently. Ownership was coordinated with explicit user approval; the image API chat isolated and released commit 96dd64e first. The UX work preserves the production routes, deterministic APIs, permanent shades, RGB/HSL readout, and CSS export. Random discovery is described as exploration rather than falsely claiming random colors are similar.
+1. Recoloring uses RGB-tolerance flood fill, not semantic object selection. Similar colors can bleed into adjoining objects; hair, reflections, transparent materials, and textured edges need manual tolerance/subtraction. Do not market it as accurate paint simulation.
+2. Photo output is capped at 1100 pixels on the longest side. Full-resolution export needs a separate worker/downsample pipeline and measured memory budgets; simply removing the cap risks freezing the UI.
+3. Browser image decoding occurs before resizing. The file-size guard does not bound decoded pixel memory. Very large or hostile images need a stronger decoding pipeline.
+4. Photos are session-local. Reload/navigation does not restore the source image. A local project file with image and recipe would add recoverability without an account.
+5. External fonts need network access. Default Arial export works without Google Fonts. Offline/PWA support is not promised.
+6. The 34 remaining advisories (16 low, 5 moderate, 13 high) sit in the older CRA build/test dependency tree. `npm audit fix --force` proposes replacing react-scripts with 0.0.0, which would break the app; do not apply it. Migrate the toolchain in a separately verified change. Development servers should remain bound to localhost.
+7. Test real usage before expanding scope: can someone find a color, export a useful swatch/CSS palette, recolor a surface, and explain what decision the output helped them make?
 
-A .cjs renderer initially passed Jest but was emitted as a media URL by CRA, crashing the actual editor. Browser verification caught it; the final image API release uses normal ESM. Test browser startup and actual image rendering in addition to mocked component tests. A browser download-event wait stalled; subsequent checks use bounded operations and visible export results.
+## Project retrospective
+
+Preserve the user's existing visual design during functional work. Do not infer permission for a visual overhaul from a broad usability request. Two concurrent chats initially edited the same checkout; file ownership and release order were coordinated. A .cjs renderer passed Jest but CRA emitted it as a media URL, crashing the editor; real browser checks caught this. The final renderer uses normal ESM. Keep browser verification in addition to component mocks.

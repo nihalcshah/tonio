@@ -4,8 +4,8 @@ import Home from './Home';
 
 test('home explains both tools and links to working destinations', () => {
   render(<MemoryRouter><Home /></MemoryRouter>);
-  expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('A color worth');
-  expect(screen.getByRole('link', { name: /Create a swatch/ })).toHaveAttribute('href', '/customize');
-  expect(screen.getByRole('link', { name: /Try a photo/ })).toHaveAttribute('href', '/recolor');
-  expect(screen.getByRole('link', { name: /Image API guide/ })).toHaveAttribute('href', '/agents');
+  expect(screen.getByText('Add Some Color to Your Life')).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /Develop Your Tones/ })).toHaveAttribute('href', '/customize');
+  expect(screen.getByRole('link', { name: /Recolor a Photo/ })).toHaveAttribute('href', '/recolor');
+  expect(screen.getByRole('link', { name: /Image API & agent guide/ })).toHaveAttribute('href', '/agents');
 });
