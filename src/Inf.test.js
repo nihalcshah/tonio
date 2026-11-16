@@ -1,3 +1,4 @@
+import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen, waitFor, cleanup } from '@testing-library/react';
 import Info from './Inf';
 import { renderTone } from './imageExport';
@@ -22,9 +23,28 @@ beforeEach(() => {
 });
 afterEach(cleanup);
 
+test('recommended sources are the default and persist in exports and links', async () => {
+    render(<MemoryRouter><Info /></MemoryRouter>);
+    await screen.findByAltText(/Warm Blue/);
+    expect(window.tonio.getState()).toMatchObject({ source: 'b', name: 'Warm Blue' });
+    expect(new URL(window.tonio.permalink()).searchParams.get('source')).toBe('b');
+    await window.tonio.exportImage();
+    expect(renderTone).toHaveBeenLastCalledWith(window.tonio.getState());
+});
+
+test('saved labels survive and the recommended font catalog can be searched', async () => {
+    window.history.replaceState({}, '', '/customize?color=%23123457&name=Saved');
+    render(<MemoryRouter><Info /></MemoryRouter>);
+    fireEvent.click(screen.getByRole('button', { name: 'Image style and font' }));
+    fireEvent.change(screen.getByLabelText('Search fonts'), { target: { value: 'Roboto' } });
+    expect(screen.getByRole('option', { name: 'Roboto' })).toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: 'Montserrat' })).not.toBeInTheDocument();
+    await screen.findByAltText(/Saved/);
+});
+
 test('square shortcut exports a 1024 square directly and selects its preview', async () => {
     const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
-    render(<Info />);
+    render(<MemoryRouter><Info /></MemoryRouter>);
     fireEvent.click(screen.getByRole('button', { name: /Download square PNG/ }));
     await waitFor(() => expect(click).toHaveBeenCalledTimes(1));
     expect(renderTone).toHaveBeenCalledWith(expect.objectContaining({ style: 'square', size: 1024 }));
@@ -35,7 +55,7 @@ test('square shortcut exports a 1024 square directly and selects its preview', a
 
 test('agent configuration and permalink preserve all explicit image settings', async () => {
     window.history.replaceState({}, '', '/customize?color=%23abcdef&style=square&font=Arial&fontSize=18&size=512&name=Example');
-    render(<Info />);
+    render(<MemoryRouter><Info /></MemoryRouter>);
     await screen.findByAltText(/Example/);
     expect(window.tonio.getState()).toEqual(expect.objectContaining({ color: '#abcdef', style: 'square', font: 'Arial', fontSize: 18, size: 512, name: 'Example' }));
     const result = await window.tonio.exportImage();
@@ -47,7 +67,7 @@ test('agent configuration and permalink preserve all explicit image settings', a
 });
 
  test('validates manual hex input and keeps color contrast tied to the current color', async () => {
-    render(<Info />);
+    render(<MemoryRouter><Info /></MemoryRouter>);
     fireEvent.click(screen.getByRole('button', { name: 'Change Color', exact: true }));
     const input = screen.getByLabelText('Hex color');
     fireEvent.change(input, { target: { value: 'wrong' } });

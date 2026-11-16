@@ -2,7 +2,7 @@ import React from "react";
 import { useRef, useEffect, useState } from 'react';
 import "./index.css"
 import { normalizeTone, renderTone } from './imageExport';
-import { GetColorName } from 'hex-color-to-color-name';
+import { colorNameFor, baselineFonts, recommendedFonts } from './colorSources';
 import { SwatchesPicker, CirclePicker, SliderPicker, BlockPicker, SketchPicker } from "react-color";
 import getContrastRatio from 'get-contrast-ratio';
 import shader from 'shader';
@@ -54,7 +54,8 @@ function getShadeList(baseColor) {
     ]
 }
 
-function Gallery({ galleryRef, selectedFont, selectedFontImport, setColor, setColorName, paletteColors, setPaletteColors }) {
+function Gallery({ galleryRef, selectedFont, selectedFontImport, setColor, setColorName, paletteColors, setPaletteColors, source }) {
+    const GetColorName = hex => colorNameFor(hex, source);
 
     function CloseGallery(event) {
         galleryRef.current.close();
@@ -145,6 +146,9 @@ function readInitialTone() {
 
 function Info() {
     const [initial] = useState(readInitialTone);
+    const [source, setSource] = useState(initial.tone.source);
+    const [fontSearch, setFontSearch] = useState("");
+    const GetColorName = hex => colorNameFor(hex, source);
     const [color, setColor] = useState(initial.tone.color)
     const [colorName, setColorName] = useState(initial.tone.name)
     const [saved, setSaved] = useState(false)
@@ -159,7 +163,7 @@ function Info() {
     const [imgLink, setImgLink] = useState("")
     const [exporting, setExporting] = useState(false)
     const [imgSrc, setImgSrc] = useState("")
-    const [fontList, setFontList] = useState([])
+    const fontList = source === 'a' ? baselineFonts : recommendedFonts
     const [exportLoaded, setExportLoaded] = useState(false)
     const [exportError, setExportError] = useState(initial.error)
     const [outputSize, setOutputSize] = useState(initial.tone.size)
@@ -169,24 +173,25 @@ function Info() {
     const [preview, setPreview] = useState("")
     const styleNames = ['outlined', 'croptop', 'buzzcut', 'square'];
     const configRef = useRef(null);
-    configRef.current = { color, name: colorName, style: styleNames[elemInd], font: selectedFont, fontSize, size: outputSize };
+    configRef.current = { source, color, name: colorName, style: styleNames[elemInd], font: selectedFont, fontSize, size: outputSize };
     const fontPixels = { 'text-sm': 14, 'text-base': 16, 'text-lg': 18, 'text-xl': 20, 'text-2xl': 24, 'text-3xl': 30 };
 
     useEffect(() => {
         let cancelled = false;
         setPreview("");
-        renderTone({ color, name: colorName, style: ['outlined', 'croptop', 'buzzcut', 'square'][elemInd], font: selectedFont,
+        renderTone({ source, color, name: colorName, style: ['outlined', 'croptop', 'buzzcut', 'square'][elemInd], font: selectedFont,
             fontSize, size: outputSize })
             .then(result => { if (!cancelled) { setPreview(result.dataUrl); } })
             .catch(error => { if (!cancelled) setExportError(error.message || "Could not render the image. Please try again."); });
         return () => { cancelled = true; };
-    }, [color, colorName, elemInd, selectedFont, fontSize, outputSize]);
+    }, [source, color, colorName, elemInd, selectedFont, fontSize, outputSize]);
 
 
     useEffect(() => {
         function configure(options = {}) {
-            const next = normalizeTone({ ...configRef.current, ...options, ...(options.color && options.name === undefined ? { name: undefined } : {}) });
+            const next = normalizeTone({ ...configRef.current, ...options, ...((options.color || options.source) && options.name === undefined ? { name: undefined } : {}) });
             configRef.current = next;
+            setSource(next.source);
             setColor(next.color);
             setColorName(next.name);
             setElemInd(['outlined', 'croptop', 'buzzcut', 'square'].indexOf(next.style));
@@ -200,9 +205,9 @@ function Info() {
             version: 1,
             getState: () => ({ ...configRef.current }),
             configure,
-            exportImage: (overrides = {}) => renderTone({ ...configRef.current, ...overrides, ...(overrides.color && overrides.name === undefined ? { name: undefined } : {}) }),
+            exportImage: (overrides = {}) => renderTone({ ...configRef.current, ...overrides, ...((overrides.color || overrides.source) && overrides.name === undefined ? { name: undefined } : {}) }),
             preview: async (overrides = {}) => {
-                const image = await renderTone({ ...configRef.current, ...overrides, ...(overrides.color && overrides.name === undefined ? { name: undefined } : {}) });
+                const image = await renderTone({ ...configRef.current, ...overrides, ...((overrides.color || overrides.source) && overrides.name === undefined ? { name: undefined } : {}) });
                 setImgSrc(image.dataUrl);
                 setExportLoaded(false);
                 const link = document.createElement('a');
@@ -215,16 +220,12 @@ function Info() {
             permalink: () => `${window.location.origin}/customize?${new URLSearchParams(configRef.current)}`,
         };
         return () => { delete window.tonio; };
-    }, [color, colorName, elemInd, selectedFont, fontSize, outputSize]);
+    }, [source, color, colorName, elemInd, selectedFont, fontSize, outputSize]);
 
     const [paletteColors, setPaletteColors] = useState(() => generateRandomColors(16))
 
 
-    useEffect(() => {
-        var fontL = ["Noto Sans NKo Unjoined", "AR One Sans", "Young Serif", "Gabarito", "Pixelify Sans", "Onest", "Dela Gothic One", "Martian Mono", "Sofia Sans Condensed", "Inria Sans", "Sofia Sans", "Autour One", "Instrument Sans", "Mohave", "Salsa", "Mooli", "Oxanium", "Besley", "REM", "Fanwood Text", "Catamaran", "Comme", "Wix Madefor Text", "Source Sans 3", "Inclusive Sans", "Iceland", "Kufam", "Georama", "Duru Sans", "Gayathri", "Boogaloo", "Paytone One", "JetBrains Mono", "Anek Latin", "Mina", "Fira Mono", "Roboto Serif", "Secular One", "Red Hat Mono", "Kalam", "Sriracha", "Sarabun", "Chango", "Gothic A1", "Metamorphous", "Rokkitt", "Barlow", "Indie Flower", "Space Grotesk", "Fredoka", "Sora", "Inconsolata", "Inter", "Dosis", "Cookie", "M PLUS 1p", "Great Vibes", "Cabin", "Playfair Display", "Libre Baskerville", "Jura", "Rancho", "Montserrat", "Cardo", "Overpass", "Oxygen", "Poppins", "Cormorant Garamond", "Merriweather", "Bebas Neue", "Quicksand", "Ubuntu", "Raleway", "Mitr", "Quattrocento Sans", "Lato", "Rubik", "Krub", "Baloo 2", "EB Garamond", "Nunito", "Anton", "Fira Sans", "Manrope", "Karla", "Josefin Sans", "Open Sans", "Bodoni Moda", "Yanone Kaffeesatz", "Rajdhani", "DM Sans", "Abel", "Caveat", "Work Sans", "Teko", "PT Serif", "Roboto Condensed", "Roboto Slab", "Roboto", "Righteous", "Zilla Slab", "Frank Ruhl Libre", "Urbanist", "Lobster", "Archivo", "Ubuntu Mono", "Lora", "Kanit", "Pridi", "PT Sans", "Oswald", "Petrona", "Vollkorn", "Blinker", "DM Serif Display", "Cinzel", "Exo 2", "Barlow Condensed", "Dancing Script", "Playfair Display SC", "Libre Franklin", "Bricolage Grotesque", "Manjari", "Nanum Gothic", "Space Mono", "Bitter", "Domine", "Spectral", "Inter Tight", "Newsreader", "Lexend", "Public Sans", "Sarabun", "Chivo", "Unbounded", "Sono", "Plus Jakarta Sans", "Albert Sans", "Figtree", "Outfit", "Epilogue", "Instrument Serif", "Sacramento", "Josefin Slab",]
-        fontL.sort(() => Math.random() - 0.5);
-        setFontList([...new Set(fontL)])
-    }, []);
+
 
     function handleChange(newColor, event) {
         setExportError("");
@@ -244,7 +245,7 @@ function Info() {
         setExportLoaded(false);
         setExportError("");
         try {
-            const result = await renderTone({ color, name: colorName, style, font: selectedFont, fontSize, size: style === 'square' && download ? 1024 : outputSize });
+            const result = await renderTone({ source, color, name: colorName, style, font: selectedFont, fontSize, size: style === 'square' && download ? 1024 : outputSize });
             const link = document.createElement("a");
             link.download = `${colorName}-${style}.png`;
             link.href = result.dataUrl;
@@ -290,7 +291,7 @@ function Info() {
     }
 
     function getFontsList(event) {
-        return fontList.map(font =>
+        return [...new Set([selectedFont, ...fontList.filter(font => font.toLowerCase().includes(fontSearch.toLowerCase()))])].map(font =>
             <option key={font} value={font}>{font}</option>
         );
     }
@@ -409,7 +410,7 @@ function Info() {
                 </div>
             </dialog>
 
-            <Gallery galleryRef={galleryRef} selectedFont={selectedFont} selectedFontImport={selectedFontImport} setColor={setColor} setColorName={setColorName} paletteColors={paletteColors} setPaletteColors={setPaletteColors} />
+            <Gallery source={source} galleryRef={galleryRef} selectedFont={selectedFont} selectedFontImport={selectedFontImport} setColor={setColor} setColorName={setColorName} paletteColors={paletteColors} setPaletteColors={setPaletteColors} />
 
             <dialog aria-label="Change color" id="colorPickerModal" ref={colorPickerRef} tabIndex="-1" className="tone-dialog fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
 
@@ -608,7 +609,8 @@ function Info() {
                         </div>
                         <div className="p-6 pt-3 pb-2 h-min">
                             <label htmlFor="countries" className="mb-2 block text-sm font-medium text-gray-900 ">More Font Options</label>
-                            <select defaultValue="" onChange={handleFontChange} id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5      ">
+                            {source === 'b' && <><label htmlFor="font-search">Search fonts</label><input id="font-search" value={fontSearch} onChange={event => setFontSearch(event.target.value)} className="w-full border rounded-lg p-2 mb-3" /></>}
+                            <select value={selectedFont} onChange={handleFontChange} id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5      ">
                                 <option value="" disabled>Choose From Dropdown</option>
                                 {getFontsList()}
                             </select>
@@ -678,7 +680,7 @@ function Info() {
                         </select>
                         {preview ? <img id="tone-preview" src={preview} alt={`${colorName} (${color}), ${styleNames[elemInd]} swatch`} className="w-72 max-w-full shadow-xl" /> : <p role="status">Rendering preview…</p>}
                         <button type="button" onClick={handleSquareDownload} disabled={exporting} className="mt-5 px-5 py-3 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white font-bold rounded-xl">Download square PNG · 1024 × 1024</button>
-                        <a className="mt-3 text-sm text-indigo-700 underline" href={`/customize?${new URLSearchParams({ color, name: colorName, style: styleNames[elemInd], font: selectedFont, fontSize, size: outputSize })}`}>Repeat this image · permalink</a>
+                        <a className="mt-3 text-sm text-indigo-700 underline" href={`/customize?${new URLSearchParams({ source, color, name: colorName, style: styleNames[elemInd], font: selectedFont, fontSize, size: outputSize })}`}>Repeat this image · permalink</a>
                         <a className="mt-2 text-sm text-indigo-700 underline" href="/agents">Image API for agents</a>
                         {exportError && <p role="alert" className="mt-3 text-red-700">{exportError}</p>}
                     </section>

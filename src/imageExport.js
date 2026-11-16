@@ -1,6 +1,6 @@
-import { GetColorName } from 'hex-color-to-color-name';
+import { colorNameFor } from './colorSources';
 const STYLES = ['outlined', 'croptop', 'buzzcut', 'square'];
-const SYSTEM_FONTS = ['Arial', 'Helvetica', 'Georgia', 'Verdana', 'monospace', 'serif', 'sans-serif'];
+const SYSTEM_FONTS = ['Arial', 'Helvetica', 'Georgia', 'Verdana', 'Courier New', 'monospace', 'serif', 'sans-serif'];
 function normalizeTone(input = {}) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('Recipe must be an object');
   let color = String(input.color ?? '#4f46e5');
@@ -12,10 +12,12 @@ function normalizeTone(input = {}) {
   const size = Number(input.size ?? 1024), fontSize = Number(input.fontSize ?? 14);
   if (!Number.isInteger(size) || size < 128 || size > 4096) throw new Error('size must be an integer from 128 to 4096');
   if (!Number.isFinite(fontSize) || fontSize < 8 || fontSize > 32) throw new Error('fontSize must be from 8 to 32');
-  const font = String(input.font ?? 'Arial'), name = String(input.name ?? GetColorName(color));
+  const source = input.source ?? 'b';
+  if (!['a', 'b'].includes(source)) throw new Error('source must be a or b');
+  const font = String(input.font ?? 'Arial'), name = String(input.name ?? colorNameFor(color, source));
   if (!/^[\p{L}\p{N} -]{1,80}$/u.test(font)) throw new Error('font must be a font family name');
   if (name.length > 120 || [...name].some(character => character.charCodeAt(0) < 32)) throw new Error('name must be at most 120 characters without control characters');
-  return { color, name, style, font, fontSize, size };
+  return { color, name, style, font, fontSize, size, source };
 }
 function layoutTone(input) {
   const options = normalizeTone(input), { color, style, size } = options;

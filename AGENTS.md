@@ -11,3 +11,5 @@
 - Swatch preview and export must share `renderTone` in `src/imageExport.js`.
 
 - Preserve the existing visual design when fixing usability; the user rejected the replacement layout on 2026-11-15.
+
+- Recommended data sources (B) are the default: local short color names with OKLab matching and a bundled Fontsource catalog; preserve explicit recipe labels.
