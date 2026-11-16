@@ -1,13 +1,18 @@
 # Tone.io image tools
 
 Guide: /agents
+Machine-readable discovery: /.well-known/agent.json (also linked from every page's HTML head and Browser API footer).
+
+START HERE: For automated PNG downloads, GET /api/image.png?color=%238b1e2d&style=square&size=1024. It returns raw PNG bytes over HTTP/HTTPS with Content-Type: image/png and Content-Disposition: attachment; no HTML, SVG or data URL. Supports GET/HEAD, CORS, and the recipe options below. Invalid recipes return 400 JSON. Server/font failures return 502 JSON. Arial/Helvetica/sans-serif use bundled Liberation Sans; Google Fonts load on the server. Other system fonts use Noto substitutes. Server and browser text rasterization can differ. The /image download link points here.
+
+For browser editing, open /customize in a JavaScript-capable browser. Wait for window.tonio?.version === 1. Run const image = await window.tonio.exportImage({color:'#4F46E5',name:'Royal Blue',style:'square',font:'DM Sans',fontSize:14,size:512}). Download image.url from the site origin using an HTTP/HTTPS download tool, or decode/save image.dataUrl as a PNG file; verify image.width and image.height. For visual inspection run await window.tonio.preview() after configure(recipe). The API is available in the page context, not an agent's isolated JavaScript runtime. No menu interaction is required. Discover the current UI recipe with window.tonio.getState().
 
 GET /api/image?color=%234f46e5&style=square&size=1024 returns an actual standalone image/svg+xml image (CORS enabled). No authentication. Invalid options return 400 JSON. GET and HEAD supported.
 Options: color (#RGB/#RRGGBB), name (up to 120 chars; default color name), style (outlined|croptop|buzzcut|square; default square), size (integer width128..4096; default1024), fontSize (8..32 at base width288; default14), font (default Arial). HTTP SVG supports Arial, Helvetica, Georgia, Verdana, monospace, serif, sans-serif. Viewer installed fonts determine SVG text appearance.
 
-PNG: visit /image with the same query. Await window.tonioImage.ready. status is ready or error; result on success includes {dataUrl,mimeType,width,height,options}; error on failure contains explanation. img#tone-image is inspectable. PNG route is a browser page, not a raw PNG HTTP response. PNG supports Google Fonts family names; external fonts must load successfully.
+PNG: visit /image with the same query. Await window.tonioImage.ready. status is ready or error; result on success includes {url,dataUrl,mimeType,width,height,options}; error on failure contains explanation. img#tone-image is inspectable. PNG route is a browser page, not a raw PNG HTTP response. PNG supports Google Fonts family names; external fonts must load successfully.
 
-Normal editor: /customize accepts the same recipe query. window.tonio.version = 1; getState(); configure(recipe); await exportImage(overrides); await preview(overrides); permalink(). exportImage returns {dataUrl,mimeType,width,height,options}. No random/time/viewport inputs. Save all recipe options for repeatability; PNG bytes can differ across browsers/platforms/fonts.
+Normal editor: /customize accepts the same recipe query. window.tonio.version = 1; getState(); configure(recipe); await exportImage(overrides); await preview(overrides); permalink(). exportImage returns {url,dataUrl,mimeType,width,height,options}. No random/time/viewport inputs. Save all recipe options for repeatability; PNG bytes can differ across browsers/platforms/fonts.
 
 Photo recolor: /recolor. window.tonioRecolor.version = 1; await ready(); await load(Blob|data:image URL); state(); await configure({color:'#RRGGBB',tolerance:1..100,globalMatch:boolean}); await select({x,y,mode:'add'|'subtract'}); await undo(); await reset(); await compare(boolean); await export({original?:boolean}). Export returns {dataUrl,mimeType,width,height,recipe,original}. Source is resized to maximum dimension1100. Selection coordinates use those source pixel dimensions. Calls serialized. Compare affects preview only; normal export always returns recolored result. Save source+recipe and replay configure+selections to repeat. All photo processing is browser-local.
 

@@ -22,7 +22,8 @@ function normalizeTone(input = {}) {
 function layoutTone(input) {
   const options = normalizeTone(input), { color, style, size } = options;
   const white = style === 'outlined' || style === 'croptop';
-  const baseHeight = style === 'square' ? 288 : style === 'buzzcut' ? 346 : style === 'outlined' ? 400 : 428;
+  // Filled swatches keep a square canvas, including the labels inside its bounds.
+  const baseHeight = style === 'square' || style === 'buzzcut' ? 288 : style === 'outlined' ? 400 : 428;
   const inset = style === 'outlined' ? 16 : 0, top = style === 'outlined' ? 24 : 0;
   const rgb = color.slice(1).match(/../g).map(v => parseInt(v, 16) / 255).map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4);
   const luminance = .2126 * rgb[0] + .7152 * rgb[1] + .0722 * rgb[2];
@@ -53,8 +54,13 @@ async function loadFont(font) {
   })().catch(error => { fontLoads.delete(font); throw error; }));
   await fontLoads.get(font);
 }
-async function renderTone(input = {}) {
+function pngUrl(input = {}) {
+  return `/api/image.png?${new URLSearchParams(normalizeTone(input))}`;
+}
+async function renderTone(input = {}, { rasterizeSvg } = {}) {
   const l = layoutTone(input), { color, name, font, fontSize } = l.options;
+  // The HTTP renderer uses the same recipe, geometry, contrast and labels without a DOM.
+  if (rasterizeSvg) return { buffer: await rasterizeSvg(toneSvg(l.options), l.options), url: pngUrl(l.options), mimeType: 'image/png', width: l.width, height: l.height, options: l.options };
   await loadFont(font);
   const canvas = document.createElement('canvas'); canvas.width=l.width; canvas.height=l.height;
   const ctx = canvas.getContext('2d');
@@ -65,6 +71,6 @@ async function renderTone(input = {}) {
   ctx.fillStyle=l.ink; ctx.textBaseline='alphabetic';
   ctx.font=`400 ${fontSize}px "${font}", Arial, sans-serif`; ctx.fillText(color,12,l.labelY,104);
   ctx.font=`700 ${fontSize}px "${font}", Arial, sans-serif`; ctx.textAlign='right'; ctx.fillText(name,276,l.labelY,152);
-  return { dataUrl:canvas.toDataURL('image/png'), mimeType:'image/png', width:l.width, height:l.height, options:l.options };
+  return { dataUrl:canvas.toDataURL('image/png'), url: pngUrl(l.options), mimeType:'image/png', width:l.width, height:l.height, options:l.options };
 }
-export { STYLES, normalizeTone, layoutTone, toneSvg, renderTone };
+export { STYLES, normalizeTone, layoutTone, toneSvg, renderTone, pngUrl };

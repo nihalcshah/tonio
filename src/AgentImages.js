@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { normalizeTone, renderTone } from './imageExport';
+import { normalizeTone, renderTone, pngUrl } from './imageExport';
 
 export function ImageView() {
   const [result, setResult] = useState(null);
@@ -18,7 +18,7 @@ export function ImageView() {
   return <main className="min-h-screen p-6 flex flex-col items-center gap-4">
     {error ? <p role="alert">{error}</p> : result ? <>
       <img id="tone-image" src={result.dataUrl} width={result.width} height={result.height} style={{ maxWidth: '100%', maxHeight: '75vh', width: 'auto', height: 'auto' }} alt={`${result.options.name} (${result.options.color}), ${result.options.style}`} />
-      <a className="underline" download={`tone-${result.options.color.slice(1)}-${result.options.style}.png`} href={result.dataUrl}>Download PNG · {result.width} × {result.height}</a>
+      <a className="underline" download={`tone-${result.options.color.slice(1)}-${result.options.style}.png`} href={pngUrl(result.options)}>Download PNG · {result.width} × {result.height}</a>
     </> : <p role="status">Rendering image…</p>}
     <a href="/customize" className="underline">Open editor</a><a href="/agents" className="underline">Image API guide</a>
   </main>;
@@ -31,10 +31,10 @@ export default function AgentImages() {
     <a href="/" className="font-display text-2xl font-bold">Tone.io</a>
     <h1 className="text-4xl font-bold">Images for people and agents</h1>
     <p>Choose explicit settings, inspect the image, and reuse the same recipe. No account or API key required.</p>
-    <div className="flex flex-wrap gap-4"><a className="underline" href={`/image?${query}`}>Inspect square PNG</a><a className="underline" href={`/api/image?${query}`}>Open direct SVG</a><a className="underline" href={`/customize?${query}`}>Edit this recipe</a><a className="underline" href="/recolor">Recolor a photo</a></div>
+    <div className="flex flex-wrap gap-4"><a className="underline" href={`/image?${query}`}>Inspect square PNG</a><a className="underline" href={`/api/image.png?${query}`}>Download direct PNG</a><a className="underline" href={`/api/image?${query}`}>Open direct SVG</a><a className="underline" href={`/customize?${query}`}>Edit this recipe</a><a className="underline" href="/recolor">Recolor a photo</a></div>
     <h2 className="text-2xl font-bold">Fetch an image directly</h2>
-    <pre className="p-4 bg-white rounded-xl overflow-auto text-sm">{`GET /api/image?color=%234f46e5&style=square&size=1024\nGET /image?color=%234f46e5&style=square&size=1024`}</pre>
-    <p><code>/api/image</code> returns standalone SVG with text, an image content type, and CORS enabled. <code>/image</code> renders a PNG in an ordinary image element: await <code>window.tonioImage.ready</code>, then read <code>window.tonioImage.result.dataUrl</code>. If rendering fails, status is <code>error</code> and <code>error</code> explains why. This page requires a browser; fetching its HTML does not return PNG bytes.</p>
+    <pre className="p-4 bg-white rounded-xl overflow-auto text-sm">{`GET /api/image.png?color=%234f46e5&style=square&size=1024\nGET /api/image?color=%234f46e5&style=square&size=1024\nGET /image?color=%234f46e5&style=square&size=1024`}</pre>
+    <p><code>/api/image.png</code> returns actual PNG bytes with <code>Content-Type: image/png</code> and a download filename. Use this HTTPS URL with download tools; no browser execution or base64 decoding is needed. GET and HEAD are supported. <code>/api/image</code> returns standalone SVG with text, an image content type, and CORS enabled. <code>/image</code> renders a PNG in an ordinary image element: await <code>window.tonioImage.ready</code>, then read <code>window.tonioImage.result.dataUrl</code>. If rendering fails, status is <code>error</code> and <code>error</code> explains why. This page requires a browser; fetching its HTML does not return PNG bytes.</p>
     <h2 className="text-2xl font-bold">Recipe options</h2>
     <div className="overflow-auto"><table className="w-full text-left bg-white"><thead><tr><th className="p-2">Option</th><th>Values / default</th></tr></thead><tbody>
       {[
@@ -42,15 +42,15 @@ export default function AgentImages() {
         ['color', '#RGB or #RRGGBB / #4f46e5 (URL encode # as %23)'],
         ['style', 'outlined, croptop, buzzcut, square / square'],
         ['name', 'Label, up to 120 characters / color name'],
-        ['size', 'Output width, integer 128–4096 / 1024; square gives equal height'],
+        ['size', 'Output width, integer 128–4096 / 1024; square and buzzcut give equal height'],
         ['fontSize', '8–32 pixels at base width 288 / 14; scales with output'],
-        ['font', 'Browser PNG: Google Fonts family or system font / Arial. HTTP SVG: Arial, Helvetica, Georgia, Verdana, Courier New, monospace, serif, sans-serif.'],
+        ['font', 'Browser PNG: Google Fonts family or system font / Arial. HTTP PNG: Google Fonts or Arial/Helvetica/sans-serif (bundled Liberation Sans); other system fonts use Noto substitutes. HTTP SVG: Arial, Helvetica, Georgia, Verdana, monospace, serif, sans-serif.'],
       ].map(([key, value]) => <tr key={key} className="border-t"><td className="p-2 font-mono">{key}</td><td>{value}</td></tr>)}
     </tbody></table></div>
     <p>All settings are explicit in editor permalinks. No clock, random seed, viewport, or device pixel ratio affects exports. PNGs repeat pixel-for-pixel with the same recipe, fonts, and browser environment. Font rasterization can differ between platforms; Google Fonts requires network access. Standalone SVG uses the viewer’s installed fonts.</p>
     <h2 className="text-2xl font-bold">Control the normal editor</h2>
-    <p>On <a className="underline" href="/customize">/customize</a>, the same controls and exports are available through the versioned browser API. Returned data URLs can be saved or loaded into an image viewer.</p>
-    <pre className="p-4 bg-white rounded-xl overflow-auto text-sm">{`window.tonio.getState()\nwindow.tonio.configure({color:'#4f46e5', style:'square', font:'Arial'})\nconst image = await window.tonio.exportImage({size:1024})\n// {dataUrl, mimeType, width, height, options}\nawait window.tonio.preview() // inspect exported image in editor\nwindow.tonio.permalink() // all current recipe settings`}</pre>
+    <p>On <a className="underline" href="/customize">/customize</a>, wait until <code>window.tonio?.version === 1</code> in the page’s JavaScript context. The same controls and exports are available through the versioned browser API. Export returns a direct HTTP PNG URL in <code>url</code> and the browser PNG in <code>dataUrl</code>. Download <code>image.url</code> from this site’s origin, or inspect with <code>preview()</code>. No menu interaction is required. Every page links <a className="underline" href="/.well-known/agent.json">machine-readable capabilities</a> and plain text instructions in its HTML and HTTP headers.</p>
+    <pre className="p-4 bg-white rounded-xl overflow-auto text-sm">{`window.tonio.getState()\nwindow.tonio.configure({color:'#4f46e5', style:'square', font:'Arial'})\nconst image = await window.tonio.exportImage({size:1024})\n// {url, dataUrl, mimeType, width, height, options}\nawait window.tonio.preview() // inspect exported image in editor\nwindow.tonio.permalink() // all current recipe settings`}</pre>
     <h2 className="text-2xl font-bold">Recolor photos</h2>
     <p>On <a className="underline" href="/recolor">/recolor</a>, load a local Blob or data URL and use the same selection, tolerance, global matching, comparison, undo, reset, and export operations as the UI. Coordinates refer to the processed original image (maximum dimension 1100), reported by state. Calls are serialized and await rendering.</p>
     <pre className="p-4 bg-white rounded-xl overflow-auto text-sm">{`await window.tonioRecolor.ready()\nawait window.tonioRecolor.load(blobOrImageDataUrl)\nawait window.tonioRecolor.configure({color:'#4f46e5', tolerance:35, globalMatch:false})\nawait window.tonioRecolor.select({x:100, y:120, mode:'add'})\nawait window.tonioRecolor.select({x:110, y:120, mode:'subtract'})\nwindow.tonioRecolor.state()\nawait window.tonioRecolor.undo()\nawait window.tonioRecolor.compare(true)\nconst image = await window.tonioRecolor.export()\n// {dataUrl, mimeType, width, height, recipe, original}\n// compare does not change export; export({original:true}) gets source\nawait window.tonioRecolor.reset()`}</pre>

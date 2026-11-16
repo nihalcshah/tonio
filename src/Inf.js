@@ -1,7 +1,7 @@
 import React from "react";
 import { useRef, useEffect, useState } from 'react';
 import "./index.css"
-import { normalizeTone, renderTone } from './imageExport';
+import { normalizeTone, renderTone, pngUrl } from './imageExport';
 import { colorNameFor, baselineFonts, recommendedFonts } from './colorSources';
 import { SwatchesPicker, CirclePicker, SliderPicker, BlockPicker, SketchPicker } from "react-color";
 import getContrastRatio from 'get-contrast-ratio';
@@ -211,7 +211,7 @@ function Info() {
                 setImgSrc(image.dataUrl);
                 setExportLoaded(false);
                 const link = document.createElement('a');
-                link.href = image.dataUrl;
+                link.href = pngUrl(image.options || configRef.current);
                 link.download = 'tone.png';
                 setImgLink(link);
                 if (!exportRef.current.open) exportRef.current.showModal();
@@ -248,7 +248,7 @@ function Info() {
             const result = await renderTone({ source, color, name: colorName, style, font: selectedFont, fontSize, size: style === 'square' && download ? 1024 : outputSize });
             const link = document.createElement("a");
             link.download = `${colorName}-${style}.png`;
-            link.href = result.dataUrl;
+            link.href = pngUrl(result.options || { source, color, name: colorName, style, font: selectedFont, fontSize, size: style === 'square' && download ? 1024 : outputSize });
             setImgLink(link);
             setImgSrc(result.dataUrl);
             setSaved(false);

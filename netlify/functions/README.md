@@ -4,6 +4,16 @@ This directory contains Python serverless functions that can be deployed to Netl
 
 ## Current Functions
 
+### `image-png.js`
+
+- **Endpoint**: `/api/image.png?color=%238b1e2d&style=square&size=1024`
+- **Methods**: GET and HEAD
+- **Response**: PNG bytes, `Content-Type: image/png`, and an attachment filename.
+- Uses `renderTone` with the Sharp backend in `netlify/lib/pngRenderer.js`.
+- `netlify.toml` keeps Sharp external and bundles the licensed fonts in `netlify/fonts`.
+- Arial/Helvetica/sans-serif work without external font requests. Google Fonts need outbound HTTPS; other system fonts use Noto substitutes. Rendering failures return 502 JSON; invalid recipes return 400 JSON.
+- Run with `netlify dev` or deploy to Netlify. `npm start` alone only serves the React app.
+
 ### `hello.py`
 
 A simple example function that returns a greeting message.

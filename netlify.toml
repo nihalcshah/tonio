@@ -9,11 +9,18 @@
   publish = "build"
 
 [[redirects]]
+  from = "/api/image.png"
+  to = "/.netlify/functions/image-png"
+  status = 200
+
+[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
 [functions]
   node_bundler = "esbuild"
+  external_node_modules = ["sharp"]
+  included_files = ["netlify/fonts/**"]
 
 [[redirects]]
   from = "/*"

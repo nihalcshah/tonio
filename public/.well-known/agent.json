@@ -1,0 +1,57 @@
+{
+  "name": "Tone.io",
+  "version": 1,
+  "description": "Create labeled color swatches and recolor photos. Browser APIs share the manual UI rendering paths.",
+  "instructions": "/llms.txt",
+  "documentation": "/agents",
+  "authentication": "none",
+  "capabilities": [
+    {
+      "name": "swatch",
+      "url": "/customize",
+      "context": "browser JavaScript",
+      "ready": "window.tonio?.version === 1",
+      "api": "window.tonio",
+      "methods": [
+        "getState",
+        "configure",
+        "exportImage",
+        "preview",
+        "permalink"
+      ],
+      "example": "const image = await window.tonio.exportImage({color:'#4F46E5',name:'Royal Blue',style:'square',font:'DM Sans',fontSize:14,size:512})",
+      "output": "image.url is a relative HTTP PNG download URL. image.dataUrl is the browser-rendered PNG data URL. Also includes mimeType, width, height, options. Server and browser font rasterization can differ."
+    },
+    {
+      "name": "photo-recolor",
+      "url": "/recolor",
+      "context": "browser JavaScript",
+      "ready": "window.tonioRecolor?.version === 1",
+      "api": "window.tonioRecolor",
+      "methods": [
+        "ready",
+        "load",
+        "state",
+        "configure",
+        "select",
+        "undo",
+        "reset",
+        "compare",
+        "export"
+      ],
+      "instructions": "Await ready(), load a Blob or data:image URL, configure and select source pixels, then await export(). Save the returned dataUrl. Processing is local."
+    },
+    {
+      "name": "direct-svg",
+      "url": "/api/image?color=%234F46E5&style=square&size=512",
+      "context": "HTTP GET or HEAD",
+      "output": "image/svg+xml"
+    },
+    {
+      "name": "direct-png",
+      "url": "/api/image.png?color=%238b1e2d&style=square&size=1024",
+      "context": "HTTP GET or HEAD",
+      "output": "image/png bytes with an attachment filename; download directly over HTTPS. Same recipe options as /customize. Arial/Helvetica/sans-serif use bundled Liberation Sans; Google Fonts load on the server. Other system fonts use Noto substitutes."
+    }
+  ]
+}

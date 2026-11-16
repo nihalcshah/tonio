@@ -1,2 +1,3 @@
+/api/image.png /.netlify/functions/image-png 200
 /api/* /.netlify/functions/:splat 200
 /* /index.html 200
