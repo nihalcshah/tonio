@@ -25,3 +25,13 @@ test('direct images are deterministic, correctly escaped and use contrasting lab
   expect((await handler({ httpMethod: 'POST' })).statusCode).toBe(405);
   expect((await handler({ httpMethod: 'HEAD' })).body).toBe('');
 });
+
+ test('HTTP images honor the selected naming source and supported system fonts', async () => {
+  for (const source of ['a', 'b']) {
+    const query = { color: '#123457', source, font: 'Courier New' };
+    const response = await handler({ httpMethod: 'GET', queryStringParameters: query });
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toContain(`<title>${normalizeTone(query).name} #123457</title>`);
+  }
+  expect((await handler({ httpMethod: 'GET', queryStringParameters: { source: 'invalid' } })).statusCode).toBe(400);
+ });

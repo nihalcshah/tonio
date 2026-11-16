@@ -38,12 +38,13 @@ export default function AgentImages() {
     <h2 className="text-2xl font-bold">Recipe options</h2>
     <div className="overflow-auto"><table className="w-full text-left bg-white"><thead><tr><th className="p-2">Option</th><th>Values / default</th></tr></thead><tbody>
       {[
+        ['source', 'b (recommended names, default), or a (legacy names); explicit name is preserved'],
         ['color', '#RGB or #RRGGBB / #4f46e5 (URL encode # as %23)'],
         ['style', 'outlined, croptop, buzzcut, square / square'],
         ['name', 'Label, up to 120 characters / color name'],
         ['size', 'Output width, integer 128–4096 / 1024; square gives equal height'],
         ['fontSize', '8–32 pixels at base width 288 / 14; scales with output'],
-        ['font', 'Browser PNG: Google Fonts family or system font / Arial. HTTP SVG: Arial, Helvetica, Georgia, Verdana, monospace, serif, sans-serif.'],
+        ['font', 'Browser PNG: Google Fonts family or system font / Arial. HTTP SVG: Arial, Helvetica, Georgia, Verdana, Courier New, monospace, serif, sans-serif.'],
       ].map(([key, value]) => <tr key={key} className="border-t"><td className="p-2 font-mono">{key}</td><td>{value}</td></tr>)}
     </tbody></table></div>
     <p>All settings are explicit in editor permalinks. No clock, random seed, viewport, or device pixel ratio affects exports. PNGs repeat pixel-for-pixel with the same recipe, fonts, and browser environment. Font rasterization can differ between platforms; Google Fonts requires network access. Standalone SVG uses the viewer’s installed fonts.</p>
